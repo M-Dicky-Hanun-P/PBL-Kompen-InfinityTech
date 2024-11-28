@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http; // Tambahkan ini untuk menggunakan http
 import 'package:flutter/material.dart';
 import 'package:sikomti_app/proses_log&res/register_page.dart';
 import 'landing_page.dart';
@@ -19,20 +21,47 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   String _errorMessage = '';
 
-  void login() {
+  // Fungsi login yang akan mengirimkan permintaan ke API backend
+  Future<void> login() async {
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    if (username == '2241760035' && password == '2241760035') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(username: username),
-        ),
+    const String url =
+        'http://127.0.0.1:8000/api/login';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'username': username,
+          'password': password,
+        }),
       );
-    } else {
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Pesan: ${data['message']}')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(username: username),
+          ),
+        );
+      } else {
+        final data = json.decode(response.body);
+        setState(() {
+          _errorMessage = data['error'] ?? 'Login gagal';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_errorMessage)),
+        );
+      }
+    } catch (e) {
       setState(() {
-        _errorMessage = 'Username atau password salah!';
+        _errorMessage = 'Terjadi kesalahan, coba lagi nanti';
       });
     }
   }
