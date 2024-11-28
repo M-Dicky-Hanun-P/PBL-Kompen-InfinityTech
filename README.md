@@ -1,4 +1,4 @@
-# 📱 **Programmer WEB & Mobile untuk Progres Kelompok 2 InfinityTech SIB-3D**
+#📱**Programmer WEB & Mobile untuk Progres Kelompok 2 InfinityTech SIB-3D**
 
 ## 💡 Nama Anggota Tim InfinityTech:
 ### 1. **Andreas Gale Dwi Jaya** (👨‍💻 *System Analyst*)
