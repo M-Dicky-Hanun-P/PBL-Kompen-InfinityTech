@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserModel extends Model
 {
     use HasFactory;
-    protected $table = 'm_user'; // mendefinisian nama tabel
+    protected $table = 'm_mahasiswa'; // mendefinisian nama tabel
     protected $primaryKey = 'user_id'; // mendefinisikan primary key
-    protected $fillable = ['level_id', 'username', 'nama', 'password', 'avatar', 'created_at', 'updated_at'];
+    protected $fillable = ['id_level',    'username', 'nama',  'password',    'nim',    'prodi',    'email',    'tahun_masuk',    'no_telepon',    'avatar', 'created_at', 'update_at'];
 
     protected $hidden = ['password'];
 
@@ -19,7 +19,7 @@ class UserModel extends Model
 
     public function level(): BelongsTo
     {
-        return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
+        return $this->belongsTo(LevelModel::class, 'id_level', 'id_level');
     }
 
     public function getRoleName(): string
@@ -37,19 +37,23 @@ class UserModel extends Model
         return $this->level->level_kode;
     }
 
-    public function mahasiswa(){
+    public function mahasiswa()
+    {
         return $this->hasOne(MahasiswaModel::class, 'user_id');
     }
 
-    public function admin(){
+    public function admin()
+    {
         return $this->hasOne(AdminModel::class, 'user_id');
     }
 
-    public function dosen(){
+    public function dosen()
+    {
         return $this->hasOne(DosenModel::class, 'user_id');
     }
 
-    public function tendik(){
+    public function tendik()
+    {
         return $this->hasOne(TendikModel::class, 'user_id');
     }
 }
