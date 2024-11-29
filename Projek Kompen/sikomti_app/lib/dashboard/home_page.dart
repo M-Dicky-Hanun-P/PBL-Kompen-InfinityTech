@@ -1,5 +1,6 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sikomti_app/fitur_sidebar/lihat_dan_pilih_kompen/lihat_kompen_page.dart';
 import 'package:sikomti_app/fitur_sidebar/update_progres_tugas_kompen/tugas_on_the_go.dart';
 import 'package:sikomti_app/proses_log&res/login_page.dart';
@@ -16,8 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  XFile? _profileImage;
-
   @override
   void initState() {
     super.initState();
@@ -28,9 +27,7 @@ class _HomePageState extends State<HomePage> {
     final prefs = await SharedPreferences.getInstance();
     final imagePath = prefs.getString('profileImagePath');
     if (imagePath != null) {
-      setState(() {
-        _profileImage = XFile(imagePath);
-      });
+      setState(() {});
     }
   }
 
@@ -69,14 +66,11 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      backgroundImage: _profileImage != null
-                          ? FileImage(File(_profileImage!.path))
-                          : null,
-                      child: _profileImage == null
-                          ? const Icon(Icons.person, color: Colors.white)
-                          : null,
+                    const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Color.fromARGB(255, 90, 156, 242),
+                      child: Icon(FontAwesomeIcons.userAlt,
+                          size: 23, color: Colors.white),
                     ),
                     const SizedBox(width: 10),
                     Column(
@@ -97,7 +91,7 @@ class _HomePageState extends State<HomePage> {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.lightBlue,
+                              color: const Color(0xFF5BC0DE),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Text(
@@ -163,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UploadBerkasBeritaAcara()),
+                        builder: (context) => const UploadBerkasBeritaAcara()),
                   );
                 },
               ),
@@ -288,9 +282,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     if (updatedProfileImage != null) {
-      setState(() {
-        _profileImage = updatedProfileImage;
-      });
+      setState(() {});
       _saveProfileImage(updatedProfileImage.path);
     }
   }
@@ -323,9 +315,10 @@ class ProfilePageDialog extends StatelessWidget {
           Row(
             children: [
               const CircleAvatar(
-                radius: 40,
-                backgroundColor: Colors.grey,
-                child: Icon(Icons.person, size: 40, color: Colors.white),
+                radius: 25,
+                backgroundColor: Color.fromARGB(183, 90, 156, 242),
+                child: Icon(FontAwesomeIcons.userAlt,
+                    size: 29, color: Colors.white),
               ),
               const SizedBox(width: 16),
               Expanded(
