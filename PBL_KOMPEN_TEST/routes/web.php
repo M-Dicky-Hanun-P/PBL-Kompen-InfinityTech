@@ -73,7 +73,21 @@ Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'inde
 Route::get('/aAdminDosenTeknisi', [aUserADTController::class, 'index']);
 
 // User Mahasiswa
-Route::get('/aMahasiswa', [aUserMahasiswaController::class, 'index']);
+// Route::get('/aMahasiswa', [aUserMahasiswaController::class, 'index']);
+// Route::post('/aMahasiswa', [aUserMahasiswaController::class, 'list']);
+
+Route::group(['prefix' => 'aMahasiswa'], function () {
+    Route::get('/', [aUserMahasiswaController::class, 'index']);
+    Route::post('/list', [aUserMahasiswaController::class, 'list']);
+    Route::get('/create_ajax', [aUserMahasiswaController::class, 'create_ajax']);
+    Route::post('/ajax', [aUserMahasiswaController::class, 'store_ajax']);
+    Route::get('/{id}/show_ajax', [aUserMahasiswaController::class, 'show_ajax']);
+    Route::get('/{id}/edit_ajax', [aUserMahasiswaController::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [aUserMahasiswaController::class, 'update_ajax']);
+    Route::get('/{id}/delete_ajax', [aUserMahasiswaController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [aUserMahasiswaController::class, 'delete_ajax']);
+});
+
 
 // Daftar Mahasiswa Alpha
 Route::get('/aDaftarMahasiswaAlpha', [aDMAlphaController::class, 'index']);
@@ -120,7 +134,51 @@ Route::get('/dtDaftarMahasiswaAlpha', [dtDMAlphaController::class, 'index']);
 Route::get('/dtDaftarMahasiswaKompen', [dtDMKompenController::class, 'index']);
 
 // Manage Kompen
-Route::get('/dtManageKompen', [dtManageKompenController::class, 'index']);
+//Route::get('/dtManageKompen', [dtManageKompenController::class, 'index']);
+
+// Route::group(['prefix' => 'dtManageKompen'], function () {
+//     Route::get('/', [dtManageKompenController::class, 'index']);
+//     Route::post('/list', [dtManageKompenController::class, 'list']);
+//     Route::get('/create_ajax', [dtManageKompenController::class, 'create_ajax']);
+//     Route::post('/ajax', [dtManageKompenController::class, 'store_ajax']);
+//     Route::get('/{id}/show_ajax', [dtManageKompenController::class, 'show_ajax']);
+//     Route::get('/{id}/edit_ajax', [dtManageKompenController::class, 'edit_ajax']);
+//     Route::put('/{id}/update_ajax', [dtManageKompenController::class, 'update_ajax']);
+//     Route::get('/{id}/delete_ajax', [dtManageKompenController::class, 'confirm_ajax']);
+//     Route::delete('/{id}/delete_ajax', [dtManageKompenController::class, 'delete_ajax']);
+// });
+
+
+// Grup route dengan prefix 'dtManageKompen'
+Route::group(['prefix' => 'dtManageKompen'], function () {
+    // Route untuk menampilkan halaman index
+    Route::get('/', [dtManageKompenController::class, 'index'])->name('dtManageKompen.index');
+    
+    // Route untuk mengambil data melalui AJAX (server-side)
+    Route::post('/list', [dtManageKompenController::class, 'list'])->name('dtManageKompen.list');
+
+    // Route untuk membuka form create (tampilan modal)
+    Route::get('/create_ajax', [dtManageKompenController::class, 'create_ajax'])->name('dtManageKompen.create');
+
+    // Route untuk menyimpan data melalui AJAX
+    Route::post('/ajax', [dtManageKompenController::class, 'store_ajax'])->name('dtManageKompen.store');
+
+    // Route untuk menampilkan data dalam modal (detail)
+    Route::get('/{id}/show_ajax', [dtManageKompenController::class, 'show_ajax'])->name('dtManageKompen.show');
+    
+    // Route untuk membuka form edit (tampilan modal)
+    Route::get('/{id}/edit_ajax', [dtManageKompenController::class, 'edit_ajax'])->name('dtManageKompen.edit');
+
+    // Route untuk memperbarui data melalui AJAX
+    Route::put('/{id}/update_ajax', [dtManageKompenController::class, 'update_ajax'])->name('dtManageKompen.update');
+    
+    // Route untuk konfirmasi penghapusan (tampilan modal)
+    Route::get('/{id}/delete_ajax', [dtManageKompenController::class, 'confirm_ajax'])->name('dtManageKompen.delete.confirm');
+
+    // Route untuk menghapus data melalui AJAX
+    Route::delete('/{id}/delete_ajax', [dtManageKompenController::class, 'delete_ajax'])->name('dtManageKompen.delete');
+});
+
 
 // Update Kompen
 Route::get('/dtUpdateKompen', [dtUpdateKompenController::class, 'index']);
@@ -150,3 +208,7 @@ Route::group(['prefix' => 'aUser'], function () {
     Route::get('/{id}/delete_ajax', [aUserController::class, 'confirm_ajax']);
     Route::delete('/{id}/delete_ajax', [aUserController::class, 'delete_ajax']);
 });
+
+Route::get('/dtDMAlpha', [DtDMAlphaController::class, 'index'])->name('dtDMAlpha.index');
+Route::get('/dtDMAlpha/import', [DtDMAlphaController::class, 'importPage'])->name('dtDMAlpha.importPage');
+Route::post('/dtDMAlpha/import', [DtDMAlphaController::class, 'importExcel'])->name('dtDMAlpha.importExcel');
