@@ -24,7 +24,8 @@ class _RegisterPageState extends State<RegisterPage> {
       request.fields['no_telepon'] = _nomorTeleponController.text;
       request.fields['username'] = _usernameController.text;
       request.fields['password'] = _passwordController.text;
-      request.fields['password_confirmation'] = _konfirmasipasswordController.text;
+      request.fields['password_confirmation'] =
+          _konfirmasipasswordController.text;
       request.fields['prodi'] = _selectedProgramStudi ?? '';
       request.fields['tahun_masuk'] = _selectedTahunMasuk ?? '';
 
@@ -41,9 +42,11 @@ class _RegisterPageState extends State<RegisterPage> {
             );
           }
         } else {
+          final responseString = await response.stream.bytesToString();
+          print('Registrasi gagal: $responseString');
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Registrasi gagal!')),
+              SnackBar(content: Text('Registrasi gagal: $responseString')),
             );
           }
         }
