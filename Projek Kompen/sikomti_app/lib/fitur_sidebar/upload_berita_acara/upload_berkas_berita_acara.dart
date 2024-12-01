@@ -30,7 +30,7 @@ class _UploadBerkasBeritaAcaraState extends State<UploadBerkasBeritaAcara> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(username: 'mahasiswa'),
+                builder: (context) => const HomePage(username: '2241760023', id_mahasiswa: '7',),
               ),
             );
           },

@@ -5,12 +5,15 @@ import 'package:sikomti_app/fitur_sidebar/lihat_dan_pilih_kompen/lihat_kompen_pa
 import 'package:sikomti_app/fitur_sidebar/update_progres_tugas_kompen/tugas_on_the_go.dart';
 import 'package:sikomti_app/proses_log&res/login_page.dart';
 import 'package:sikomti_app/fitur_sidebar/upload_berita_acara/upload_berkas_berita_acara.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   final String username;
-  const HomePage({super.key, required this.username});
+  final String id_mahasiswa;
+  const HomePage(
+      {super.key, required this.username, required this.id_mahasiswa});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,23 +21,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   @override
-  void initState() {
-    super.initState();
-    _loadProfileImage();
-  }
+  // void initState() {
+  //   super.initState();
+  //   _loadProfileImage();
+  // }
 
-  Future<void> _loadProfileImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final imagePath = prefs.getString('profileImagePath');
-    if (imagePath != null) {
-      setState(() {});
-    }
-  }
+  // Future<void> _loadProfileImage() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final imagePath = prefs.getString('profileImagePath');
+  //   if (imagePath != null) {
+  //     setState(() {});
+  //   }
+  // }
 
-  Future<void> _saveProfileImage(String path) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('profileImagePath', path);
-  }
+  // Future<void> _saveProfileImage(String path) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('profileImagePath', path);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -270,28 +273,136 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Future<void> _showEditProfileDialog(BuildContext context) async {
+  //   final updatedProfileImage = await showDialog<XFile?>(
+  //     context: context,
+  //     builder: (context) => ProfilePageDialog(
+  //       username: widget.username,
+  //       email: 'mahasiswa@gmail.com',
+  //       no_telepon: '08123456789',
+  //       password: 'mahasiswa123',
+  //       bidangKompetensi: 'Coding Mobile Flutter',
+  //     ),
+  //   );
+  //   // if (updatedProfileImage != null) {
+  //   //   setState(() {});
+  //   //   _saveProfileImage(updatedProfileImage.path);
+  //   // }
+  // }
+  Future<Map<String, dynamic>> getProfileData(String username) async {
+    final url = Uri.parse(
+        'http://127.0.0.1:8000/api/detailMHS/${widget.id_mahasiswa}'); // Ganti dengan URL API kamu
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data; // Kembalikan data berupa map
+    } else {
+      throw Exception('Failed to load profile');
+    }
+  }
+
   Future<void> _showEditProfileDialog(BuildContext context) async {
-    final updatedProfileImage = await showDialog<XFile?>(
+    try {
+      // Ambil data profil dari API
+      final profileData = await getProfileData(widget.username);
+
+      await showDialog(
+        context: context,
+        builder: (context) => ProfilePageDialog(
+          username:
+              profileData['username'] ?? '', // Jika null, beri string kosong
+          email: profileData['email'] ?? '', // Jika null, beri string kosong
+          no_telepon:
+              profileData['no_telepon'] ?? '', // Jika null, beri string kosong
+          password:
+              profileData['password'] ?? '', // Jika null, beri string kosong
+          bidangKompetensi: profileData['bidangKompetensi'] ??
+              '', // Jika null, beri string kosong
+        ),
+      );
+    } catch (e) {
+      print("Error fetching profile: $e");
+    }
+  }
+}
+
+class ProfilePage extends StatefulWidget {
+  final String id_mahasiswa; // Tambahkan parameter userId untuk API
+  const ProfilePage({super.key, required this.id_mahasiswa});
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  late String username = '';
+  late String email = '';
+  late String no_telepon;
+  late String password = '';
+  late String bidangKompetensi = 'Coding Mobile Flutter'; // Default value
+
+  Future<void> _fetchUserData() async {
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/api/detailMHS/${widget.id_mahasiswa}'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        username = data['username'];
+        email = data['email'];
+        no_telepon = data['no_telepon'];
+        password = data['password'];
+      });
+    } else {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to fetch user data!')),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _showEditProfileDialog(BuildContext context) async {
+    await showDialog(
       context: context,
       builder: (context) => ProfilePageDialog(
-        username: widget.username,
-        email: 'mahasiswa@gmail.com',
-        phone: '08123456789',
-        password: 'mahasiswa123',
-        bidangKompetensi: 'Coding Mobile Flutter',
+        username: username,
+        email: email,
+        no_telepon: no_telepon, // Tidak perlu mengubah int ke String
+        password: password,
+        bidangKompetensi: bidangKompetensi,
       ),
     );
-    if (updatedProfileImage != null) {
-      setState(() {});
-      _saveProfileImage(updatedProfileImage.path);
-    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => _showEditProfileDialog(context),
+          child: const Text('Edit Profile'),
+        ),
+      ),
+    );
   }
 }
 
 class ProfilePageDialog extends StatelessWidget {
   final String username;
   final String email;
-  final String phone;
+  final String no_telepon;
   final String password;
   final String bidangKompetensi;
 
@@ -299,7 +410,7 @@ class ProfilePageDialog extends StatelessWidget {
     super.key,
     required this.username,
     required this.email,
-    required this.phone,
+    required this.no_telepon,
     required this.password,
     required this.bidangKompetensi,
   });
@@ -382,7 +493,7 @@ class ProfilePageDialog extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'No Telepon: $phone',
+                  'No Telepon: $no_telepon',
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                 ),
               ),
@@ -391,16 +502,22 @@ class ProfilePageDialog extends StatelessWidget {
           const SizedBox(height: 1),
           const Divider(color: Colors.black54, height: 20),
 
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.lock, size: 20, color: Colors.orange),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Password: ${'*' * password.length}', // Menampilkan password tersembunyi
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                ),
+              const Row(
+                children: [
+                  Icon(Icons.lock, size: 20, color: Colors.orange),
+                  SizedBox(
+                      width: 10), // Mengatur jarak antara ikon dan teks
+                  Text(
+                    'Password: ${'***'}', // Menampilkan password tersembunyi
+                    style: TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ],
               ),
+              const SizedBox(
+                  height: 10), // Mengatur jarak antara teks dan tombol
               TextButton(
                 onPressed: () {
                   // Menampilkan pesan menggunakan dialog
@@ -445,27 +562,29 @@ class ProfilePageDialog extends StatelessWidget {
                   );
                 },
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 10), // Menambahkan padding yang lebih besar
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.blueAccent, width: 2),
+                    borderRadius:
+                        BorderRadius.circular(12), // Memperhalus sudut
+                    // border: Border.all(color: Colors.blueAccent),
                     gradient: const LinearGradient(
                       colors: [Colors.blue, Colors.blueAccent],
                       begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                      end: Alignment.bottomLeft,
                     ),
                   ),
                   child: const Text(
                     'Lihat Password',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 12,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
 

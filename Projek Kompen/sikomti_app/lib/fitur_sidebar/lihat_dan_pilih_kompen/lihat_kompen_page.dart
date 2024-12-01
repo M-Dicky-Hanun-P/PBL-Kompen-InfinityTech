@@ -77,9 +77,8 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => const HomePage(
-                        username: 'mahasiswa',
-                      )),
+                builder: (context) => const HomePage(username: '2241760023', id_mahasiswa: '7',),
+              ),
             );
           },
         ),

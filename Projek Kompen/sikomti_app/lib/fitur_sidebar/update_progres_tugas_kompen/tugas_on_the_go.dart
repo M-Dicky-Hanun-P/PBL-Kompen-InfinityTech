@@ -20,9 +20,8 @@ class TugasOnTheGo extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => const HomePage(
-                        username: 'mahasiswa',
-                      )),
+                builder: (context) => const HomePage(username: '2241760023', id_mahasiswa: '7',),
+              ),
             );
           },
         ),
