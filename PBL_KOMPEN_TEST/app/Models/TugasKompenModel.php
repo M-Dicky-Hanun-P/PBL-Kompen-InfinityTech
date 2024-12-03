@@ -10,14 +10,17 @@ class TugasKompenModel extends Model
     use HasFactory;
 
     protected $table = 'm_tugas_kompen'; // Nama tabel di database
-    protected $primaryKey = 'id'; // Primary key tabel
+    protected $primaryKey = 'id_tugas_kompen'; // Primary key tabel
     protected $fillable = [
-        'pemberi_tugas',
-        'jenis_tugas',
+        'nama_tugas',
         'deskripsi',
-        'kuota',
+        'status',
+        'tanggal_mulai',
+        'tanggal_selesai',
         'jam_kompen',
-        'waktu_pengerjaan',
+        'pemberi_tugas',
+        'kuota',
+        'id_jenis_tugas',
         'status_permintaan'
     ];
 
