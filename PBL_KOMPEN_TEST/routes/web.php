@@ -26,6 +26,7 @@ use App\Http\Controllers\LihatPilihKompenController;
 use App\Http\Controllers\UpdateKompenSelesaiController;
 use App\Http\Controllers\UpdateProgresTugasKompenController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\mDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,6 +52,8 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 // Welcome for Mahasiswa
 Route::get('/Mahasiswa', [WelcomeController::class, 'index']);
+Route::get('/dashboard', [mDashboardController::class, 'index'])->name('dashboard.index');
+
 
 // Welcome for Admin
 Route::get('/Admin', [aWelcomeController::class, 'index']);
