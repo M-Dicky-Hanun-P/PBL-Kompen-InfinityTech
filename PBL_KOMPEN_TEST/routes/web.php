@@ -24,6 +24,7 @@ use App\Http\Controllers\dtWelcomeController;
 use App\Http\Controllers\JenisPenugasanController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LihatPilihKompenController;
+use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\UpdateKompenSelesaiController;
 use App\Http\Controllers\UpdateProgresTugasKompenController;
 use App\Http\Controllers\WelcomeController;
@@ -40,12 +41,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Landing Page
-Route::get('/', [LandingPageController::class, 'index']);
+Route::get('/', [LandingPageController::class, 'index']); // Halaman Landing
 
-// Login
-Route::get('login', [AuthController::class, 'login'])->name('login');
+// Login berdasarkan jenis pengguna
+Route::get('login/admin', [AuthController::class, 'loginAdmin'])->name('login.admin');
+Route::get('login/dosentendik', [AuthController::class, 'loginDosenTendik'])->name('login.dosentendik');
+Route::get('login/mahasiswa', [AuthController::class, 'loginMahasiswa'])->name('login.mahasiswa');
+
+// Proses login
 Route::post('login', [AuthController::class, 'postLogin']);
+
+//Register
+Route::get('register', [RegistrationController::class, 'registration'])->name('register');
+Route::post('register', [RegistrationController::class, 'store']);
 
 // Logout
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
@@ -130,6 +138,9 @@ Route::group(['prefix' => 'aManageJenisPenugasan'], function () {
     Route::put('/{id}/update_ajax', [JenisPenugasanController::class, 'update_ajax']);
     Route::get('/{id}/delete_ajax', [JenisPenugasanController::class, 'confirm_ajax']);
     Route::delete('/{id}/delete_ajax', [JenisPenugasanController::class, 'delete_ajax']);
+    //Route::get('/{id}/delete_ajax', [JenisPenugasanController::class, 'delete_ajax']);
+    //Route::delete('/{id}/delete_ajax', [JenisPenugasanController::class, 'destroy_ajax']);
+
 });
 
 

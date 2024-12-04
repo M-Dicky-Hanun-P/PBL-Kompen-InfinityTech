@@ -5,29 +5,37 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class MahasiswaModel extends Model
 {
     use HasFactory;
 
     protected $table = 'm_mahasiswa'; // Mendefinisikan nama tabel
-    protected $primaryKey = 'mahasiswa_id'; // Mendefinisikan primary key
+    protected $primaryKey = 'id_mahasiswa'; // Mendefinisikan primary key
 
-    protected $fillable = ['user_id', 'nim', 'prodi', 'email', 'tahun_masuk', 'no_telepon'];
+    protected $fillable = ['id_level', 'username', 'password', 'nim', 'prodi', 'email', 'tahun_masuk', 'no_telepon', 'nama', 'avatar'];
 
-    // relasi pada m_user
-    public function user(): BelongsTo {
-        return $this->belongsTo(UserModel::class, 'user_id', 'user_id');
+    protected $hidden = ['password'];
+
+    protected $casts = ['password' => 'hashed'];
+
+    public function level(): BelongsTo
+    {
+        return $this->belongsTo(LevelModel::class, 'id_level', 'id_level');
     }
 
-    // relasi pada m_tugas_mahasiswa
-    public function tugasMahasiswa(): HasMany {
-        return $this->hasMany(TugasMahasiswaModel::class, 'mahasiswa_id', 'mahasiswa_id');
+    public function getRoleName(): string
+    {
+        return $this->level->level_nama;
     }
 
-    // relasi pada m_alpha
-    public function alpha(): HasMany {
-        return $this->hasMany(AlphaModel::class, 'mahasiswa_id', 'mahasiswa_id');
+    public function hasRole($role): bool
+    {
+        return $this->level->level_kode == $role;
+    }
+
+    public function getRole()
+    {
+        return $this->level->level_kode;
     }
 }

@@ -17,15 +17,14 @@
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Nama Tugas</th>
-                    <th>Pemberi Tugas</th>
-                    <th>Jenis Tugas Kompen</th>
+                    <th>Nama Tugas</th> <!-- Sesuaikan dengan 'nama_tugas' -->
                     <th>Deskripsi</th>
-                    <th>Kuota</th>
-                    <th>Jam Kompen</th>
-                    <th>Status</th>
-                    <th>Tanggal Mulai</th>
-                    <th>Tanggal Selesai</th>
+                    <th>Pemberi Tugas</th> <!-- Sesuaikan dengan 'pemberi_tugas' -->
+                    <th>Kuota</th> <!-- Sesuaikan dengan 'kuota' -->
+                    <th>Jam Kompen</th> <!-- Sesuaikan dengan 'jam_kompen' -->
+                    <th>Status</th> <!-- Sesuaikan dengan 'status' -->
+                    <th>Waktu Mulai</th> <!-- Sesuaikan dengan 'tanggal_mulai' -->
+                    <th>Waktu Selesai</th> <!-- Sesuaikan dengan 'tanggal_selesai' -->
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -41,32 +40,29 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function() {
-        // Inisialisasi DataTable
-        $('#kompenTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: '{{ url('dtManageKompen/list') }}', // URL untuk mengambil data
-                type: 'POST',
-                data: function (d) {
-                    // Menambahkan data tambahan untuk dikirim ke server, jika diperlukan
-                }
-            },
-            columns: [
-                { data: 'DT_RowIndex', name: 'DT_RowIndex' }, // Menambahkan nomor urut
-                { data: 'nama_tugas', name: 'nama_tugas' }, // Kolom Nama Tugas
-                { data: 'pemberi_tugas', name: 'pemberi_tugas' }, // Kolom Pemberi Tugas
-                { data: 'jenis_tugas_kompen', name: 'jenis_tugas_kompen' }, // Kolom Jenis Tugas Kompen
-                { data: 'deskripsi', name: 'deskripsi' }, // Kolom Deskripsi
-                { data: 'kuota', name: 'kuota' }, // Kolom Kuota
-                { data: 'jam_kompen', name: 'jam_kompen' }, // Kolom Jam Kompen
-                { data: 'status', name: 'status' }, // Kolom Status
-                { data: 'tanggal_mulai', name: 'tanggal_mulai' }, // Kolom Tanggal Mulai
-                { data: 'tanggal_selesai', name: 'tanggal_selesai' }, // Kolom Tanggal Selesai
-                { data: 'aksi', name: 'aksi', orderable: false, searchable: false } // Kolom Aksi
-            ]
-        });
-    });
+    $('#kompenTable').DataTable({
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: '{{ url('dtManageKompen/list') }}',
+        type: 'POST',
+        data: function (d) {
+            d._token = '{{ csrf_token() }}'; // Menambahkan token CSRF
+        }
+    },
+    columns: [
+        { data: 'DT_RowIndex', name: 'DT_RowIndex' },
+        { data: 'pemberi_tugas', name: 'pemberi_tugas' },
+        { data: 'jenis_tugas_kompen', name: 'jenis_tugas_kompen' },
+        { data: 'deskripsi', name: 'deskripsi' },
+        { data: 'kuota', name: 'kuota' },
+        { data: 'jam_kompen', name: 'jam_kompen' },
+        { data: 'status', name: 'status' },
+        { data: 'tanggal_mulai', name: 'tanggal_mulai' },
+        { data: 'tanggal_selesai', name: 'tanggal_selesai' },
+        { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
+    ]
+});
+
 </script>
 @endsection

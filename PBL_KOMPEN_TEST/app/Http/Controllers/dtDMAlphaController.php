@@ -2,89 +2,55 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\AlphaModel;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Models\MahasiswaModel;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
-class DtDMAlphaController extends Controller
+class dtDMAlphaController extends Controller
 {
     public function index()
-{
-    $breadcrumb = (object)[
-        'title' => 'Daftar Mahasiswa Alpha',
-        'list' => ['Home', 'Daftar Mahasiswa Alpha']
-    ];
-
-    $page = (object)[
-        'title' => 'Daftar Mahasiswa Alpha'
-    ];
-
-    $activeMenu = 'dtDMAlpha'; // Tentukan menu yang aktif
-
-    return view('dtDMAlpha.index', compact('breadcrumb', 'page', 'activeMenu'));
-}
-
-
-    public function import()
     {
-        return view('dtDMAlpha.import');
+        $breadcrumb = (object)[
+            'title' => 'Daftar Mahasiswa Alpha',
+            'list' => ['Home', 'Mahasiswa Alpha']
+        ];
+
+        $page = (object)[
+            'title' => 'Daftar Mahasiswa Alpha',
+        ];
+
+        $aMahasiswa = MahasiswaModel::all();
+
+        $activeMenu = 'aMahasiswaAlpha';
+
+        return view('aMahasiswaAlpha.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'aMahasiswa' => $aMahasiswa, 'activeMenu' => $activeMenu]);
     }
 
-    public function import_ajax(Request $request)
+    public function list(Request $request)
     {
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'file_alpha' => ['required', 'mimes:xlsx', 'max:1024']
-            ];
+        $aMahasiswaAlphas = AlphaModel::select('id_alpha', 'id_mahasiswa', 'jumlah_alpha', 'id_periode')
+            ->with('mahasiswa')
+            ->with('periode');
 
-            $validator = Validator::make($request->all(), $rules);
+        // if ($request -> nim) {
+        //     $aDosens->where('nim', $request->nim);
+        // }
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors()
-                ]);
-            }
+        return DataTables::of($aMahasiswaAlphas)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($aMahasiswaAlpha) {
+                $btn = '<button onclick="modalAction(\'' . url('/aMahasiswaAlpha/' . $aMahasiswaAlpha->id_alpha . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
 
-            $file = $request->file('file_alpha');
-            $reader = IOFactory::createReader('Xlsx');
-            $reader->setReadDataOnly(true);
-            $spreadsheet = $reader->load($file->getRealPath());
-            $sheet = $spreadsheet->getActiveSheet();
-            $data = $sheet->toArray(null, false, true, true);
+    public function show_ajax(string $id)
+    {
+        $aMahasiswaAlpha = AlphaModel::find($id);
 
-            $insert = [];
-            if (count($data) > 1) {
-                foreach ($data as $baris => $value) {
-                    if ($baris > 1) {
-                        $insert[] = [
-                            'mahasiswa_id' => $value['A'],
-                            'jumlah_alpha' => $value['B'],
-                            'periode_id'   => $value['C'],
-                            'prodi'        => $value['D'],
-                            'created_at'   => now(),
-                        ];
-                    }
-                }
-
-                if (count($insert) > 0) {
-                    AlphaModel::insertOrIgnore($insert);
-                }
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data Mahasiswa Alpha berhasil diimport'
-                ]);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Tidak ada data yang diimport'
-                ]);
-            }
-        }
-
-        return redirect('/');
+        return view('aMahasiswaAlpha.show_ajax', ['aMahasiswaAlpha' => $aMahasiswaAlpha]);
     }
 }
