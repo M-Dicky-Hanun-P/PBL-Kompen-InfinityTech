@@ -532,7 +532,7 @@ class ProfilePageDialog extends StatelessWidget {
                         ),
                         content: const Text(
                           'Password hanya bisa dilihat di aplikasi website.',
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
                         ),
                         actions: [
                           ElevatedButton(

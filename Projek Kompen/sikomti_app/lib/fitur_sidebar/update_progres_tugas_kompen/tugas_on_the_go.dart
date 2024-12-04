@@ -56,12 +56,12 @@ class TugasOnTheGo extends StatelessWidget {
                           Text(
                             'Bongkar pasang CPU',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'On Progress',
+                            'Your Progress',
                             style: TextStyle(
                               fontSize: 14,
                               fontStyle: FontStyle.italic,
@@ -117,7 +117,7 @@ class TugasOnTheGo extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          '*dapat diunduh apabila telah selesai mengerjakan penugasan kompen',
+                          '*Dapat diunduh apabila telah selesai mengerjakan penugasan kompen',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,
