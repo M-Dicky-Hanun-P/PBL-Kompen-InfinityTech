@@ -12,23 +12,15 @@
         @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
-        
-        <table class="table table-bordered table-striped table-hover table-sm" id="table_user">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Pemberi Kompen</th>
-                    <th>Jenis Tugas Kompen</th>
-                    <th>Status</th>
-                    <th>Jam Kompen</th>
-                    <th>Waktu Pengerjaan</th>
-                    <th>Progres</th>
-                    <th>Catatan</th>
-                </tr>
-            </thead>
-        </table>
+
+        <form action="{{ url('/kompensasi/update-selesai') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="form-group">
+                <label for="compensation_file">Upload Berita Acara</label>
+                <input type="file" class="form-control" id="compensation_file" name="compensation_file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Unggah</button>
+        </form>
     </div>
 </div>
-<div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data backdrop="static"
-    data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection

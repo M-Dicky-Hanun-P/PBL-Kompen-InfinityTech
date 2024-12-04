@@ -75,6 +75,8 @@ Route::get('/mUpdateProgresTugasKompen', [UpdateProgresTugasKompenController::cl
 
 // Update Kompen Selesai
 Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index']);
+Route::get('/kompensasi/update-selesai', [UpdateKompenSelesaiController::class, 'index'])->name('kompensasi.updateSelesai');
+Route::post('/kompensasi/update-selesai', [UpdateKompenSelesaiController::class, 'store']);
 
 // user as Admin
 // User Admin/Dosen/Teknisi
