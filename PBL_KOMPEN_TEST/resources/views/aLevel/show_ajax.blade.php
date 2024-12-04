@@ -27,15 +27,15 @@
             <table class="table table-bordered table-striped table-hover table-sm">
                 <tr>
                     <th>ID</th>
-                    <td>{{ $aLevel->level_id }}</td>
+                    <td>{{ $aLevel->id_level}}</td>
                 </tr>
                 <tr>
                     <th>Level Kode</th>
-                    <td>{{ $aLevel->level_kode }}</td>
+                    <td>{{ $aLevel->kode_level }}</td>
                 </tr>
                 <tr>
                     <th>Level Nama</th>
-                    <td>{{ $aLevel->level_nama }}</td>
+                    <td>{{ $aLevel->nama_level }}</td>
             </table>
         </div>
         <div class="modal-footer">

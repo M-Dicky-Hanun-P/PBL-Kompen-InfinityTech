@@ -4,9 +4,6 @@
 <div class="card card-outline card-primary">
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
-        <div class="card-tools">
-            <button onclick="modalAction('{{ url('aLevel/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah</button>
-        </div>
     </div>
     <div class="card-body">
         @if (session('success'))
@@ -20,10 +17,10 @@
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Filter</label>
                     <div class="col-3">
-                        <select type="text" class="form-control" id="level_kode" name="level_kode" required>
+                        <select type="text" class="form-control" id="kode_level" name="kode_level" required>
                             <option value="">- Semua -</option>
                             @foreach ($aLevel as $item)
-                            <option value="{{ $item->level_kode }}">{{ $item->level_kode }}</option>
+                            <option value="{{ $item->kode_level }}">{{ $item->kode_level }}</option>
                             @endforeach
                         </select>
                         <small class="form-text text-muted">Kode Level</small>
@@ -65,7 +62,7 @@
                 "dataType": "json",
                 "type": "POST",
                 "data": function(d) {
-                    d.level_kode = $('#level_kode').val(); // Mengirim data filter kategori_kode
+                    d.kode_level = $('#kode_level').val(); // Mengirim data filter kategori_kode
                 }
             },
             columns: [{
@@ -75,12 +72,12 @@
                     searchable: false
                 },
                 {
-                    data: "level_kode",
+                    data: "kode_level",
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: "level_nama",
+                    data: "nama_level",
                     orderable: true,
                     searchable: true
                 },
@@ -94,7 +91,7 @@
         });
 
         // Reload tabel saat filter kategori diubah
-        $('#level_kode').on('change', function() {
+        $('#kode_level').on('change', function() {
             dataLevel.ajax.reload(); // Memuat ulang tabel berdasarkan filter yang dipilih
         });
     });

@@ -38,8 +38,20 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'mahasiswa',
         ],
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admin',
+        ],
+        'dosen' => [
+            'driver' => 'session',
+            'provider' => 'dosen',
+        ],
+        'tendik' => [
+            'driver' => 'session',
+            'provider' => 'tendik'
+        ]
     ],
 
     /*
@@ -60,9 +72,21 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'mahasiswa' => [
             'driver' => 'eloquent',
-            'model' => App\Models\UserModel::class,
+            'model' => App\Models\MahasiswaModel::class,
+        ],
+        'admin' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\AdminModel::class,
+        ],
+        'dosen' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\DosenModel::class,
+        ],
+        'tendik' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\TendikModel::class,
         ],
 
         // 'users' => [

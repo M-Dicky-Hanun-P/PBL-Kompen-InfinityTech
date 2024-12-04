@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class MahasiswaSeeder extends Seeder
 {
@@ -14,16 +16,58 @@ class MahasiswaSeeder extends Seeder
     {
         $data = [
             [
-                'bidkom_id' => 1,
-                'nama_bidkom' => 'Pemrograman Web',
-                'tag_bidkom' => 'HTML & CSS'
+                'id_mahasiswa' => 1,
+                'id_level' => 4,
+                'username' => 'kenneth',
+                'password' => Hash::make('12345'),
+                'nim' => '2241760001',
+                'prodi'=> 'Sistem Informasi Bisnis',
+                'email' => 'kenneth@gmail.com',
+                'tahun_masuk' => 2022,
+                'no_telepon' => '081233334444',
+                'nama' => 'Kenneth',
+                'avatar' => ''
             ],
             [
-                'bidkom_id' => 2,
-                'nama_bidkom' => 'Pengolahan Data',
-                'tag_bidkom' => 'MySQL'
+                'id_mahasiswa' => 2,
+                'id_level' => 4,
+                'username' => 'brandon',
+                'password' => Hash::make('12345'),
+                'nim' => '2241760002',
+                'prodi'=> 'Sistem Informasi Bisnis',
+                'email' => 'brandon@gmail.com',
+                'tahun_masuk' => 2022,
+                'no_telepon' => '081255556666',
+                'nama' => 'Brandon',
+                'avatar' => ''
+            ],
+            [
+                'id_mahasiswa' => 3,
+                'id_level' => 4,
+                'username' => 'jocelyn',
+                'password' => Hash::make('12345'),
+                'nim' => '2241760003',
+                'prodi'=> 'Sistem Informasi Bisnis',
+                'email' => 'jocelyn@gmail.com',
+                'tahun_masuk' => 2022,
+                'no_telepon' => '081299998888',
+                'nama' => 'Jocelyn',
+                'avatar' => ''
+            ],
+            [
+                'id_mahasiswa' => 4,
+                'id_level' => 4,
+                'username' => 'aileen',
+                'password' => Hash::make('12345'),
+                'nim' => '2241760004',
+                'prodi'=> 'Sistem Informasi Bisnis',
+                'email' => 'aileen@gmail.com',
+                'tahun_masuk' => 2022,
+                'no_telepon' => '081299998888',
+                'nama' => 'Aileen',
+                'avatar' => ''
             ],
         ];
-        DB::table('m_bidang_kompetensi')->insert($data);
+        DB::table('m_mahasiswa')->insert($data);
     }
 }
