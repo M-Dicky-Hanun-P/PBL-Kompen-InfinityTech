@@ -49,10 +49,11 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 254, 24, 20),
+                  backgroundColor: const Color.fromARGB(255, 249, 16, 12),
                   minimumSize: const Size(
                       100, 40), // Atur ukuran minimum (lebar, tinggi)
                   padding:
+                  // Tombol apply
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius:
