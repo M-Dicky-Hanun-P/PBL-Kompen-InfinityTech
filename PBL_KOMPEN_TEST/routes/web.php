@@ -62,6 +62,9 @@ Route::get('/DosenTeknisi', [dtWelcomeController::class, 'index']);
 // Lihat dan Pilih Kompen
 Route::get('/mLihatPilihKompen', [LihatPilihKompenController::class, 'index']);
 Route::get('/tugas-kompen/data', [LihatPilihKompenController::class, 'getTugasReady']);
+Route::get('/tugas-kompen/ambil/{id}', [LihatPilihKompenController::class, 'applyTugas']);
+Route::get('apply/{id}', [LihatPilihKompenController::class, 'applyTugas'])->name('tugas-kompen.apply');
+Route::get('/mLihatPilihKompen', [LihatPilihKompenController::class, 'index'])->name('lihatPilihKompen.index');
 
 
 // Update Progres Tugas Kompen
