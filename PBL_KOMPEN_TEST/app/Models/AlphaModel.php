@@ -25,4 +25,8 @@ class AlphaModel extends Model
     {
         return $this->belongsTo(PeriodeAkademikModel::class, 'id_periode', 'id_periode');
     }
+<<<<<<< .merge_file_ARwTKM
 }
+=======
+}
+>>>>>>> .merge_file_SwDXOh

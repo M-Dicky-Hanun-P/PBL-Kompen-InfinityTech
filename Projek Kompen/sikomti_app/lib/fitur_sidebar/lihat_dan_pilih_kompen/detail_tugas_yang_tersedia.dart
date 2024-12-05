@@ -49,11 +49,10 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 249, 16, 12),
+                  backgroundColor: const Color(0xFF28A745),
                   minimumSize: const Size(
                       100, 40), // Atur ukuran minimum (lebar, tinggi)
                   padding:
-                  // Tombol apply
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius:
@@ -61,6 +60,9 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  onStatusChanged(true);
+                  Navigator.pop(
+                      context, true); // Menutup halaman Detail setelah Apply
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -70,16 +72,15 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
                               .min, // Menjaga ukuran dialog agar tidak terlalu besar
                           children: [
                             Icon(
-                              Icons.warning, // Menggunakan ikon peringatan
-                              color: Color(
-                                  0xFFFFC107), // Warna kuning untuk ikon peringatan
+                              Icons.check_circle,
+                              color: Colors.green,
                               size: 90,
                             ),
                             SizedBox(
-                              height: 10, // Memberi jarak antara ikon dan teks
-                            ),
+                                height:
+                                    10), // Memberi jarak antara ikon dan teks
                             Text(
-                              'Tugas hanya bisa diapply pada aplikasi web.',
+                              'Permintaan berhasil dikirim',
                               style: TextStyle(
                                 fontWeight: FontWeight
                                     .bold, // Membuat teks menjadi bold
@@ -149,7 +150,7 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Expanded(
-              flex: 2,
+              flex: 2, 
               child: Text(
                 title,
                 style: const TextStyle(

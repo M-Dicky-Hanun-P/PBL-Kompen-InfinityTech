@@ -47,7 +47,11 @@
             <li class="nav-item">
                 <a href="{{ url('/mUpdateKompenSelesai') }}" class="nav-link {{ ($activeMenu =='mUpdateKompenSelesai')? 'active' : '' }} ">
                     <i class="nav-icon fas fa-history"></i>
+<<<<<<< .merge_file_HBAecz
                     <p>Update Kompen Selesai</p>
+=======
+                    <p>Upload Berita Acara</p>
+>>>>>>> .merge_file_Hws2ey
                 </a>
             </li>
             <li class="nav-item">
@@ -55,4 +59,8 @@
             </li>
         </ul>
     </nav>
+<<<<<<< .merge_file_HBAecz
 </div>
+=======
+</div>
+>>>>>>> .merge_file_Hws2ey
