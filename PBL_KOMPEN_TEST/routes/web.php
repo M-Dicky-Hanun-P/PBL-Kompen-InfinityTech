@@ -29,6 +29,7 @@ use App\Http\Controllers\aDTAdminController;
 use App\Http\Controllers\aManageDaMaKomController;
 use App\Http\Controllers\aManageKompenController;
 use App\Http\Controllers\aUpdateKompenController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,7 +60,7 @@ Route::get('/Mahasiswa', [WelcomeController::class, 'index']);
 Route::get('/Admin', [aWelcomeController::class, 'index']);
 
 // Welcome for Dosen/Teknisi
-Route::get('/DosenTeknisi', [dtWelcomeController::class, 'index']);
+Route::get('/DosenTeknisi', [dtWelcomeController::class, 'index'])->name('dosenTeknisi.index');
 
 // user as Mahasiswa
 // Lihat dan Pilih Kompen
