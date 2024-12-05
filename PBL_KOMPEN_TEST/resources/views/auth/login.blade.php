@@ -4,76 +4,181 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login Pengguna</title>
+    <title>Toko Barokah - Login</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallb
-ack">
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- icheck bootstrap -->
     <link rel="stylesheet" href="{{ asset('adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
 
+    <style>
+        /* Custom CSS untuk tampilan login */
+        body {
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        /* Setengah lingkaran di background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200%;
+            height: 500px;
+            background-color: #001c41;
+            border-bottom-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+            z-index: -1;
+        }
+
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            width: 400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            border-radius: 8px;
+        }
+
+        .card-header {
+            text-align: center;
+            background-color: #062c61;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .card-header img {
+            width: 70px;
+            margin-bottom: 10px;
+        }
+
+        .card-header h1 {
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .card-header h3 {
+            font-size: 1rem;
+        }
+
+        .login-box-msg {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .login-box .btn-primary {
+            background-color: #800000;
+            border-color: #800000;
+        }
+
+        .login-box .btn-primary:hover {
+            background-color: #660000;
+        }
+
+        .form-control {
+            height: calc(2.25rem + 2px);
+            padding: 0.5rem 0.75rem;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #ffffff;
+            background-color: #001c41;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer-text a {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
 <body class="hold-transition login-page">
     <div class="login-box">
-        <!-- /.login-logo -->
-        <div class="card card-outline card-primary">
-            <div class="card-header text-center">
-                <a href="{{ url('/') }}" class="h1"><b>Admin</b>LTE</a>
+        <div class="card card-outline">
+            <!-- Header dengan logo dan nama sistem -->
+            <div class="card-header">
+                <img src="{{ asset('gambar/logo_barokah.jpeg') }}" alt="Logo Toko Barokah">
+                <h1>Politeknik Negeri Malang</h1>
+                {{-- <h3>Malang - Jawa Timur</h3> --}}
             </div>
-            <div class="card-body">
-                <p class="login-box-msg">Sign in to start your session</p>
 
+            <!-- Form Login -->
+            <div class="card-body">
+                <p class="login-box-msg">Login</p>
                 <form action="{{ url('login') }}" method="POST" id="form-login">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="text" id="username" name="username" class="form-control"
-                            placeholder="Username">
+                        <input type="text" id="username" name="username" class="form-control" placeholder="Username">
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <span class="fas fa-user"></span>
                             </div>
                         </div>
                         <small id="error-username" class="error-text text-danger"></small>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" id="password" name="password" class="form-control"
-                            placeholder="Password">
-                        <div class="input-group-append show-password">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Password">
+                        <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-lock" id="password-lock"></span>
+                                <span class="fas fa-lock"></span>
                             </div>
                         </div>
                         <small id="error-password" class="error-text text-danger"></small>
                     </div>
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-12">
                             <div class="icheck-primary">
-                                <input type="checkbox" id="remember">
-                                <label for="remember">Remember Me</label>
+                                <input type="checkbox" id="show-password" onclick="togglePassword()">
+                                <label for="show-password">Tampilkan Password</label>
                             </div>
                         </div>
                         <!-- /.col -->
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
-
-                <div>
-                    <p>Belum punya akun? <a href="{{ url('register') }}" class="register-link">Register</a></p>
+                <div class="row mt-3">
+                    <div class="col-12 text-center">
+                        <a href="{{ url('register') }}" class="text-center">Belum Punya Akun? Registrasi ?</a>
+                    </div>
                 </div>
             </div>
             <!-- /.card-body -->
         </div>
         <!-- /.card -->
     </div>
-    <!-- /.login-box -->
+
+    <!-- Footer dengan tahun dan hak cipta -->
+    <div class="footer-text">
+        <p>&copy; 2024 Sistem Toko Barokah</p>
+    </div>
+
     <!-- jQuery -->
     <script src="{{ asset('adminlte/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->
@@ -85,14 +190,19 @@ ack">
     <script src="{{ asset('adminlte/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
-    <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
 
-        $(document).ready(function() {
+    <!-- Toggle Password Visibility -->
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById('password');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        }
+
+        $(document).ready(function () {
             $("#form-login").validate({
                 rules: {
                     username: {
@@ -106,70 +216,48 @@ ack">
                         maxlength: 20
                     }
                 },
-                submitHandler: function(form) {
+                submitHandler: function (form) {
                     $.ajax({
                         url: form.action,
                         type: form.method,
                         data: $(form).serialize(),
-                        success: function(response) {
+                        success: function (response) {
                             if (response.status) {
-                                // Notifikasi sukses dengan animasi lebih menarik
                                 Swal.fire({
                                     icon: 'success',
-                                    title: 'Login Berhasil!',
+                                    title: 'Berhasil',
                                     text: response.message,
-                                    showClass: {
-                                        popup: 'animate__animated animate__fadeInDown'
-                                    },
-                                    hideClass: {
-                                        popup: 'animate__animated animate__fadeOutUp'
-                                    },
-                                    timer: 1500, // Notifikasi otomatis tertutup setelah 1,5 detik
-                                    timerProgressBar: true,
-                                    showConfirmButton: false
-                                }).then(function() {
-                                    window.location = response.redirect; // Redirect setelah sukses
+                                }).then(function () {
+                                    window.location = response.redirect;
                                 });
                             } else {
-                                // Notifikasi error jika login gagal
+                                $('.error-text').text('');
+                                $.each(response.msgField, function (prefix, val) {
+                                    $('#error-' + prefix).text(val[0]);
+                                });
                                 Swal.fire({
                                     icon: 'error',
-                                    title: 'Gagal Login',
-                                    text: response.message,
-                                    showClass: {
-                                        popup: 'animate__animated animate__shakeX'
-                                    },
-                                    hideClass: {
-                                        popup: 'animate__animated animate__fadeOut'
-                                    },
-                                    confirmButtonText: 'Coba Lagi'
-                                });
-
-                                // Menampilkan error di setiap field
-                                $('.error-text').text('');
-                                $.each(response.msgField, function(prefix, val) {
-                                    $('#error-' + prefix).text(val[0]);
+                                    title: 'Terjadi Kesalahan',
+                                    text: response.message
                                 });
                             }
                         }
                     });
-                    return false; // Mencegah submit form default
+                    return false;
+                },
+                errorElement: 'span',
+                errorPlacement: function (error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.input-group').append(error);
+                },
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
                 }
-
             });
         });
-    </script>
-    <script>
-        // show password 
-        $('.show-password').on('click', function() {
-            if ($('#password').attr('type') == 'password') {
-                $('#password').attr('type', 'text');
-                $('#password-lock').attr('class', 'fas fa-unlock');
-            } else {
-                $('#password').attr('type', 'password');
-                $('#password-lock').attr('class', 'fas fa-lock');
-            }
-        })
     </script>
 </body>
 

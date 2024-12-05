@@ -42,13 +42,13 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Pesan: ${data['message']}')),
+          SnackBar(content: Text('${data['message']}')),
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(username: username),
-          ),
+              MaterialPageRoute(
+                builder: (context) => const HomePage(username: '2241760023', id_mahasiswa: '7',),
+              ),
         );
       } else {
         final data = json.decode(response.body);

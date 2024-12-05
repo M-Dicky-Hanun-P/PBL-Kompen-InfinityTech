@@ -1,20 +1,13 @@
 <?php
-
-use App\Http\Controllers\aDMAlphaController;
-use App\Http\Controllers\aDMKompenController;
-use App\Http\Controllers\aDTAdminController;
-use App\Http\Controllers\aDTDosenController;
-use App\Http\Controllers\aDTTenknisiController;
-use App\Http\Controllers\aLevelController;
-use App\Http\Controllers\AlphaController;
-use App\Http\Controllers\aManageBidKomController;
-use App\Http\Controllers\aManageDaMaKomController;
-use App\Http\Controllers\aManageKompenController;
-use App\Http\Controllers\aUpdateKompenController;
-use App\Http\Controllers\aUserADTController;
-use App\Http\Controllers\aUserController;
-use App\Http\Controllers\aUserMahasiswaController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\aAdminController;
+use App\Http\Controllers\aBidangKompetensiController;
+use App\Http\Controllers\aDosenController;
+use App\Http\Controllers\aLevelController;
+use App\Http\Controllers\aMahasiswaAlphaController;
+use App\Http\Controllers\aMahasiswaController;
+use App\Http\Controllers\aManageBidKomController;
+use App\Http\Controllers\aTendikController;
 use App\Http\Controllers\aWelcomeController;
 use App\Http\Controllers\dtDMAlphaController;
 use App\Http\Controllers\dtDMKompenController;
@@ -26,7 +19,16 @@ use App\Http\Controllers\LihatPilihKompenController;
 use App\Http\Controllers\UpdateKompenSelesaiController;
 use App\Http\Controllers\UpdateProgresTugasKompenController;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\mDashboardController;
+use App\Http\Controllers\aUserADTController;
+use App\Http\Controllers\aUserMahasiswaController;
+use App\Http\Controllers\aDMAlphaController;
+use App\Http\Controllers\aDMKompenController;
+use App\Http\Controllers\aDTTenknisiController;
+use App\Http\Controllers\aDTDosenController;
+use App\Http\Controllers\aDTAdminController;
+use App\Http\Controllers\aManageDaMaKomController;
+use App\Http\Controllers\aManageKompenController;
+use App\Http\Controllers\aUpdateKompenController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,8 +54,6 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 // Welcome for Mahasiswa
 Route::get('/Mahasiswa', [WelcomeController::class, 'index']);
-Route::get('/dashboard', [mDashboardController::class, 'index'])->name('dashboard.index');
-
 
 // Welcome for Admin
 Route::get('/Admin', [aWelcomeController::class, 'index']);
@@ -75,8 +75,6 @@ Route::get('/mUpdateProgresTugasKompen', [UpdateProgresTugasKompenController::cl
 
 // Update Kompen Selesai
 Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index']);
-Route::get('/kompensasi/update-selesai', [UpdateKompenSelesaiController::class, 'index'])->name('kompensasi.updateSelesai');
-Route::post('/kompensasi/update-selesai', [UpdateKompenSelesaiController::class, 'store']);
 
 // user as Admin
 // User Admin/Dosen/Teknisi
@@ -139,24 +137,73 @@ Route::get('/dtUpdateKompen', [dtUpdateKompenController::class, 'index']);
 Route::group(['prefix' => 'aLevel'], function () {
     Route::get('/', [aLevelController::class, 'index']);
     Route::post('/list', [aLevelController::class, 'list']);
-    Route::get('/create_ajax', [aLevelController::class, 'create_ajax']);
-    Route::post('/ajax', [aLevelController::class, 'store_ajax']);
     Route::get('/{id}/show_ajax', [aLevelController::class, 'show_ajax']);
-    Route::get('/{id}/edit_ajax', [aLevelController::class, 'edit_ajax']);
-    Route::put('/{id}/update_ajax', [aLevelController::class, 'update_ajax']);
-    Route::get('/{id}/delete_ajax', [aLevelController::class, 'confirm_ajax']);
-    Route::delete('/{id}/delete_ajax', [aLevelController::class, 'delete_ajax']);
 });
 
-// User ( Admin )
-Route::group(['prefix' => 'aUser'], function () {
-    Route::get('/', [aUserController::class, 'index']);
-    Route::post('/list', [aUserController::class, 'list']);
-    Route::get('/create_ajax', [aUserController::class, 'create_ajax']);
-    Route::post('/ajax', [aUserController::class, 'store_ajax']);
-    Route::get('/{id}/show_ajax', [aUserController::class, 'show_ajax']);
-    Route::get('/{id}/edit_ajax', [aUserController::class, 'edit_ajax']);
-    Route::put('/{id}/update_ajax', [aUserController::class, 'update_ajax']);
-    Route::get('/{id}/delete_ajax', [aUserController::class, 'confirm_ajax']);
-    Route::delete('/{id}/delete_ajax', [aUserController::class, 'delete_ajax']);
+// user mahasiswa
+Route::group(['prefix' => 'aMahasiswa'], function () {
+    Route::get('/', [aMahasiswaController::class, 'index']);
+    Route::post('/list', [aMahasiswaController::class, 'list']);
+    Route::get('/{id}/show_ajax', [aMahasiswaController::class, 'show_ajax']);
+    Route::get('/create_ajax', [aMahasiswaController::class, 'create_ajax']);
+    Route::post('/ajax', [aMahasiswaController::class, 'store_ajax']);
+    Route::get('{id}/edit_ajax', [aMahasiswaController::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [aMahasiswaController::class, 'update_ajax']);
+    Route::get('/{id}/delete_ajax', [aMahasiswaController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [aMahasiswaController::class, 'delete_ajax']);
+});
+
+// user admin
+Route::group(['prefix' => 'aAdmin'], function () {
+    Route::get('/', [aAdminController::class, 'index']);
+    Route::post('/list', [aAdminController::class, 'list']);
+    Route::get('/{id}/show_ajax', [aAdminController::class, 'show_ajax']);
+    Route::get('/create_ajax', [aAdminController::class, 'create_ajax']);
+    Route::post('/ajax', [aAdminController::class, 'store_ajax']);
+    Route::get('{id}/edit_ajax', [aAdminController::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [aAdminController::class, 'update_ajax']);
+    Route::get('/{id}/delete_ajax', [aAdminController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [aAdminController::class, 'delete_ajax']);
+});
+
+// user dosen
+Route::group(['prefix' => 'aDosen'], function () {
+    Route::get('/', [aDosenController::class, 'index']);
+    Route::post('/list', [aDosenController::class, 'list']);
+    Route::get('/{id}/show_ajax', [aDosenController::class, 'show_ajax']);
+    Route::get('/create_ajax', [aDosenController::class, 'create_ajax']);
+    Route::post('/ajax', [aDosenController::class, 'store_ajax']);
+    Route::get('{id}/edit_ajax', [aDosenController::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [aDosenController::class, 'update_ajax']);
+    Route::get('/{id}/delete_ajax', [aDosenController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [aDosenController::class, 'delete_ajax']);
+});
+
+// user tendik
+Route::group(['prefix' => 'aTendik'], function () {
+    Route::get('/', [aTendikController::class, 'index']);
+    Route::post('/list', [aTendikController::class, 'list']);
+    Route::get('/{id}/show_ajax', [aTendikController::class, 'show_ajax']);
+    Route::get('/create_ajax', [aTendikController::class, 'create_ajax']);
+    Route::post('/ajax', [aTendikController::class, 'store_ajax']);
+    Route::get('{id}/edit_ajax', [aTendikController::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [aTendikController::class, 'update_ajax']);
+    Route::get('/{id}/delete_ajax', [aTendikController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [aTendikController::class, 'delete_ajax']);
+});
+
+// daftar mahasiswa alpha
+Route::group(['prefix' => 'aMahasiswaAlpha'], function () {
+    Route::get('/', [aMahasiswaAlphaController::class, 'index']);
+    Route::post('/list', [aMahasiswaAlphaController::class, 'list']);
+    Route::get('/{id}/show_ajax', [aMahasiswaAlphaController::class, 'show_ajax']);
+    Route::get('/import', [aMahasiswaAlphaController::class, 'import']);
+    Route::post('/import_ajax', [aMahasiswaAlphaController::class, 'import_ajax']);
+});
+
+// manage bidang kompetensi
+Route::group(['prefix' => 'aBidangKompetensi'], function () {
+    Route::get('/', [aBidangKompetensiController::class, 'index']);
+    Route::post('/list', [aBidangKompetensiController::class, 'list']);
+    Route::get('/{id}/show_ajax', [aBidangKompetensiController::class, 'show_ajax']);
 });

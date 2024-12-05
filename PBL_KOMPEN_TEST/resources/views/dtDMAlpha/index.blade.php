@@ -12,20 +12,88 @@
         @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
-
-        <table class="table table-bordered table-striped table-hover table-sm">
+        <table class="table-bordered table-striped table-hover table-sm table" id="tabel_alpha">
             <thead>
                 <tr>
-                    <th>No</th>
+                    <th>ID</th>
                     <th>Nama Mahasiswa</th>
-                    <th>Jumlah Jam Alpha</th>
+                    <th>Jumlah Alpha</th>
                     <th>Periode</th>
-                    <th>Prodi</th>
+                    <th>Semester</th>
+                    <th>Tahun Ajaran</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
         </table>
     </div>
 </div>
-<div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data backdrop="static"
-    data-keyboard="false" data-width="75%" aria-hidden="true"></div>
+<div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
+
+@push('css')
+@endpush
+
+@push('js')
+<script>
+    function modalAction(url = '') {
+        $('#myModal').load(url, function() {
+            $('#myModal').modal('show');
+        })
+    }
+    var dataMAlpha;
+    $(document).ready(function() {
+        dataMAlpha = $('#tabel_alpha').DataTable({
+            serverSide: true, // Menggunakan server-side processing
+            ajax: {
+                "url": "{{ url('dtDaftarMahasiswaAlpha/list') }}", // Endpoint untuk mengambil data kategori
+                "dataType": "json",
+                "type": "POST",
+                "data": function(d) {
+                    d.kode_level = $('#kode_level').val(); // Mengirim data filter kategori_kode
+                }
+            },
+            columns: [{
+                    data: "DT_RowIndex", // Menampilkan nomor urut dari Laravel DataTables addIndexColumn()
+                    className: "text-center",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: "mahasiswa.nama",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "jumlah_alpha",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: 'periode.semester' && 'periode.tahun_ajaran'
+                },
+                {
+                    data: "periode.semester",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "periode.tahun_ajaran",
+                    orderable: true,
+                    searchable: true
+                },
+                {
+                    data: "aksi", // Kolom aksi (Edit, Hapus)
+                    className: "text-center",
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
+
+        // Reload tabel saat filter kategori diubah
+        $('#kode_level').on('change', function() {
+            dataLevel.ajax.reload(); // Memuat ulang tabel berdasarkan filter yang dipilih
+        });
+    });
+</script>
+@endpush

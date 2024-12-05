@@ -95,7 +95,7 @@
                         @elseif ($tugas->status_permintaan == 'ditolak')
                             Ditolak
                         @else
-                            
+
                         @endif
                     </td>
                 </tr>

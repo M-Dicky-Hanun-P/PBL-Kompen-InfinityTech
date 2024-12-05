@@ -8,6 +8,6 @@ class LandingPageController extends Controller
 {
     public function index()
     {
-        return view('landing.index'); // Ganti dengan nama view yang sesuai
+        return view('landing.index'); // Sesuaikan dengan lokasi file blade Anda
     }
 }
