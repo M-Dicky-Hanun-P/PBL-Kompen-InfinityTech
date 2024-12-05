@@ -1,11 +1,12 @@
 <?php
-
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\aAdminController;
 use App\Http\Controllers\aBidangKompetensiController;
 use App\Http\Controllers\aDosenController;
 use App\Http\Controllers\aLevelController;
 use App\Http\Controllers\aMahasiswaAlphaController;
 use App\Http\Controllers\aMahasiswaController;
+use App\Http\Controllers\aManageBidKomController;
 use App\Http\Controllers\aTendikController;
 use App\Http\Controllers\aWelcomeController;
 use App\Http\Controllers\dtDMAlphaController;
@@ -18,6 +19,16 @@ use App\Http\Controllers\LihatPilihKompenController;
 use App\Http\Controllers\UpdateKompenSelesaiController;
 use App\Http\Controllers\UpdateProgresTugasKompenController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\aUserADTController;
+use App\Http\Controllers\aUserMahasiswaController;
+use App\Http\Controllers\aDMAlphaController;
+use App\Http\Controllers\aDMKompenController;
+use App\Http\Controllers\aDTTenknisiController;
+use App\Http\Controllers\aDTDosenController;
+use App\Http\Controllers\aDTAdminController;
+use App\Http\Controllers\aManageDaMaKomController;
+use App\Http\Controllers\aManageKompenController;
+use App\Http\Controllers\aUpdateKompenController;
 use Illuminate\Support\Facades\Route;
 
 /*
