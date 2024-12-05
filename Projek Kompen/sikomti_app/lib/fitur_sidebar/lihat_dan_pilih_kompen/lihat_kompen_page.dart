@@ -43,7 +43,7 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
       'pemberi_tugas': 'Kadek Suarjuna',
       'bidang_keahlian': '-',
       'jam_kompen': '4 jam',
-      'kuota': '3/5',
+      'kuota': '5/5',
       'maxQuota': 5,
       'isRequested': false,
     },
@@ -77,11 +77,9 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(
-                  username: '2241760023',
-                  id_mahasiswa: '7',
-                ),
-              ),
+                  builder: (context) => const HomePage(
+                        username: 'mahasiswa',
+                      )),
             );
           },
         ),
@@ -92,6 +90,7 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
           itemCount: _tasks.length,
           itemBuilder: (context, index) {
             final task = _tasks[index];
+            final quotaFull = isFull(task['kuota']);
             return Card(
               elevation: 4,
               shape: RoundedRectangleBorder(
@@ -132,7 +131,11 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
                         ),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 56, 149, 255), // Warna tombol "Detail"
+                            backgroundColor: quotaFull
+                                ? const Color(
+                                    0xFFDFD700)
+                                : const Color(
+                                    0xFF33B04A), // Warna untuk tombol "Apply"
                             padding: const EdgeInsets.symmetric(
                               horizontal: 15.0,
                               vertical: 10.0,
@@ -142,29 +145,37 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                           ),
-                          onPressed: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DetailTugasYangTersediaPage(
-                                  task: task,
-                                  onStatusChanged: (status) {
-                                    // Jika ada logika untuk memperbarui status, bisa ditambahkan di sini
-                                    updateTaskStatus(index, status);
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            'Detail',
-                            style: TextStyle(
+                          onPressed: (quotaFull || task['isRequested'])
+                              ? null
+                              : () async {
+                                  final isRequested = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          DetailTugasYangTersediaPage(
+                                        task: task,
+                                        onStatusChanged: (status) {
+                                          // Memperbarui status di halaman LihatKompenPage
+                                          updateTaskStatus(index, status);
+                                        },
+                                      ),
+                                    ),
+                                  );
+
+                                  if (isRequested == true) {
+                                    updateTaskStatus(index, true);
+                                  }
+                                },
+                          child: Text(
+                            quotaFull
+                                ? 'Full'
+                                : (task['isRequested'] ? 'Requested' : 'Apply'),
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ],

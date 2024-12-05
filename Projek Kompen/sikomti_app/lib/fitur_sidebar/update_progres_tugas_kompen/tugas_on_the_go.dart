@@ -20,8 +20,9 @@ class TugasOnTheGo extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(username: '2241760023', id_mahasiswa: '7',),
-              ),
+                  builder: (context) => const HomePage(
+                        username: 'mahasiswa',
+                      )),
             );
           },
         ),
@@ -56,12 +57,12 @@ class TugasOnTheGo extends StatelessWidget {
                           Text(
                             'Bongkar pasang CPU',
                             style: TextStyle(
-                              fontSize: 17,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'Your Progress',
+                            'On Progress',
                             style: TextStyle(
                               fontSize: 14,
                               fontStyle: FontStyle.italic,
@@ -117,7 +118,7 @@ class TugasOnTheGo extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          '*Dapat diunduh apabila telah selesai mengerjakan penugasan kompen',
+                          '*dapat diunduh apabila telah selesai mengerjakan penugasan kompen',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,

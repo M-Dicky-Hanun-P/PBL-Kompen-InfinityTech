@@ -50,16 +50,13 @@ class _UploadProgressState extends State<UploadProgress> {
             borderRadius: BorderRadius.circular(12.0),
           ),
           title: const Icon(
-            Icons.warning, // Menggunakan ikon peringatan
-            color: Color(0xFFFFC107), // Warna kuning untuk ikon peringatan
-            size: 90,
+            Icons.check_circle,
+            color: Colors.green,
+            size: 80,
           ),
           content: const Text(
-            'Progres tugas hanya bisa di update pada aplikasi website.',
+            'Berhasil update progres',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontStyle: FontStyle.italic, // Font italic
-            ),
           ),
           actions: [
             Center(
@@ -151,10 +148,11 @@ class _UploadProgressState extends State<UploadProgress> {
                       backgroundColor: Colors.grey.shade300,
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Your Progress',
-                      style: TextStyle(
+                    Text(
+                      data['progress'] >= 100 ? 'Finished' : 'On Progress',
+                      style: const TextStyle(
                         fontSize: 14,
+                        color: Color.fromARGB(255, 0, 0, 0),
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -238,40 +236,39 @@ class _UploadProgressState extends State<UploadProgress> {
                 ),
               ),
             ),
-            // const SizedBox(height: 13),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   crossAxisAlignment: CrossAxisAlignment.center,
-            //   children: [
-            //     const Text(
-            //       'Progres Pengerjaan',
-            //       style: TextStyle(
-            //         fontWeight: FontWeight.bold,
-            //         fontSize: 16,
-            //       ),
-            //     ),
-            //     // IconButton(
-            //     //   onPressed: () => _updateProgress(data['progress'] - 5),
-            //     //   icon: const Icon(Icons.arrow_circle_down_outlined),
-            //     //   color: const Color.fromARGB(255, 0, 0, 0),
-            //     // ),
-            //     // Text(
-            //     //   '${data['progress'].toInt()} %',
-            //     //   style: const TextStyle(fontSize: 16),
-            //     // ),
-            //     // IconButton(
-            //     //   onPressed: () => _updateProgress(data['progress'] + 5),
-            //     //   icon: const Icon(Icons.arrow_circle_up_outlined),
-            //     //   color: const Color.fromARGB(255, 4, 4, 4),
-            //     // ),
-            //   ],
-            // ),
             const SizedBox(height: 13),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Progres Pengerjaan',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => _updateProgress(data['progress'] - 5),
+                  icon: const Icon(Icons.arrow_circle_down_outlined),
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                ),
+                Text(
+                  '${data['progress'].toInt()} %',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                IconButton(
+                  onPressed: () => _updateProgress(data['progress'] + 5),
+                  icon: const Icon(Icons.arrow_circle_up_outlined),
+                  color: const Color.fromARGB(255, 4, 4, 4),
+                ),
+              ],
+            ),
             Center(
               child: ElevatedButton(
                 onPressed: _showSuccessPopup,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 250, 12, 12),
+                  backgroundColor: const Color(0xFF0074D9),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,

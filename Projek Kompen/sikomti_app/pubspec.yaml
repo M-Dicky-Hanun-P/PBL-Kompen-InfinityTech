@@ -17,7 +17,6 @@ dependencies:
   path: ^1.8.0
   percent_indicator: ^4.2.3
   http: ^1.2.2
-  font_awesome_flutter: ^10.0.0
   
 
 dev_dependencies:
@@ -32,4 +31,3 @@ flutter:
     - assets/img/logo_jti_polinema.png
     - assets/img/profil1.jpg
     - assets/img/SIKOMTI.png
-    - assets/img/profile_d.jpg
