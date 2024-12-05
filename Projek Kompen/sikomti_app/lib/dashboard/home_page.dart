@@ -522,7 +522,7 @@ class ProfilePageDialog extends StatelessWidget {
                 onPressed: () {
                   // Menampilkan pesan menggunakan dialog
                   showDialog(
-                    context: context,
+                    context: context, 
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text(
