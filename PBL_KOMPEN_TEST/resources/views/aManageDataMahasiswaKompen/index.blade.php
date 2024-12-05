@@ -1,9 +1,13 @@
-@extends('layouts.dt_template')
+@extends('layouts.a_template')
 
 @section('content')
 <div class="card card-outline card-primary">
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
+        <div class="card-tools">
+            {{-- <button onclick="modalAction('{{ url('/aManageDataMahasiswaKompen/import') }}')" class="btn btn-success fa fa-plus-square "> Import Data</button> --}}
+            <button onclick="modalAction('{{ url('/aManageDataMahasiswaKompen/create_ajax') }}')" class="btn btn-sm btn-success mt-1 fa fa-user">Tambah</button>
+        </div>
     </div>
     <div class="card-body">
         @if (session('success'))
@@ -12,13 +16,13 @@
         @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
-        <table class="table-bordered table-striped table-hover table-sm table" id="tabel_alpha">
+        <table class="table-bordered table-striped table-hover table-sm table" id="tabel_kompen">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nama Mahasiswa</th>
-                    <th>Jumlah Alpha</th>
-                    <th>Periode</th>
+                    <th>Jumlah Kompen</th>
+                    <th>Jumlah Kompen Sudah Dikerjakan</th>
                     <th>Semester</th>
                     <th>Tahun Ajaran</th>
                     <th>Aksi</th>
@@ -40,12 +44,12 @@
             $('#myModal').modal('show');
         })
     }
-    var dataMAlpha;
+    var dataMKompen;
     $(document).ready(function() {
-        dataMAlpha = $('#tabel_alpha').DataTable({
+        dataMKompen = $('#tabel_kompen').DataTable({
             serverSide: true, // Menggunakan server-side processing
             ajax: {
-                "url": "{{ url('dtDaftarMahasiswaAlpha/list') }}", // Endpoint untuk mengambil data kategori
+                "url": "{{ url('aMahasiswaKompen/list') }}", // Endpoint untuk mengambil data kategori
                 "dataType": "json",
                 "type": "POST",
                 "data": function(d) {
@@ -64,12 +68,14 @@
                     searchable: true
                 },
                 {
-                    data: "jumlah_alpha",
+                    data: "alpha.jumlah_alpha",
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: 'periode.semester' && 'periode.tahun_ajaran'
+                    data: "jumlah_alpha_sudah_dikerjakan",
+                    orderable: true,
+                    searchable: true
                 },
                 {
                     data: "periode.semester",

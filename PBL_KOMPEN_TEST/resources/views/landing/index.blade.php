@@ -14,108 +14,139 @@
         }
 
         body {
-            background-color: #0d47a1;
-            color: white;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             min-height: 100vh;
+            background-color: #fff;
         }
 
         .container {
-            max-width: 800px;
-            margin: auto;
+            position: relative;
             text-align: center;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            color: white;
         }
 
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+        .half-circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 45vh; /* Mengatur tinggi menjadi seperempat dari tinggi layar */
+        background-color: #0E1F43;
+        border-bottom-left-radius: 95% 95%; /* Lengkungan ke tengah */
+        border-bottom-right-radius: 95% 95%; /* Lengkungan ke tengah */
+    }
+
+        .logo {
+            max-width: 300px;
+            margin: 100px auto 1rem;
+            position: relative;
+            z-index: 2;
         }
 
-        .logo-container img {
-            max-width: 80px;
-            height: auto;
-        }
+        /* .logo2 {
+            max-width: 100px;
+            margin: 100px auto 1rem;
+            position: relative;
+            z-index: 2;
+        } */
 
         .title {
-            font-size: 1.8rem;
-            color: #0d47a1;
-            margin: 1rem 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
         }
 
-        .login-options {
-            margin-top: 2rem;
+        .subtitle {
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content {
+            background-color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            z-index: 1;
+            margin-top: 300px;
+        }
+
+        .login-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
         }
 
         .btn {
             display: inline-block;
-            background-color: #d32f2f;
-            color: white;
+            padding: 0.75rem 2rem;
             border: none;
-            padding: 0.8rem 1.5rem;
-            margin: 0.5rem;
-            border-radius: 8px;
-            cursor: pointer;
+            border-radius: 5px;
             font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
+            text-align: center;
             text-decoration: none;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-            transition: 0.3s ease;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .btn.admin {
-            background-color: #d32f2f;
+            background-color: #b71c1c;
         }
 
         .btn.dosen {
-            background-color: #f57c00;
+            background-color: #ff6f00;
         }
 
         .btn.mahasiswa {
-            background-color: #ffca28;
-            color: #000;
+            background-color: #ffab00;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         footer {
+            background-color: #0E1F43;
+            color: white;
             text-align: center;
             padding: 1rem;
-            color: white;
             font-size: 0.9rem;
+            margin-top: auto;
         }
     </style>
 </head>
 
 <body>
+
     <div class="container">
-        <div class="logo-container">
-            <img src="{{ asset('images/logo_polinema.png') }}" alt="Logo Polinema">
-            <img src="{{ asset('images/logo_ti.png') }}" alt="Logo TI">
-        </div>
-        <h1 class="title">SIKOMTI</h1>
-        <p>Sistem Kompensasi Teknologi Informasi</p>
-        <p>POLITEKNIK NEGERI MALANG</p>
-        <p>Login Sebagai</p>
-        <div class="login-options">
-            <a href="{{ url('/Admin') }}" class="btn admin">Admin</a>
-            <a href="{{ url('/DosenTeknisi') }}" class="btn dosen">Dosen/Tendik</a>
-            <a href="{{ url('/Mahasiswa') }}" class="btn mahasiswa">Mahasiswa</a>
+        <div class="half-circle"></div>
+        {{-- <img src="{{ asset('images/JTI.png') }}" alt="JTI Logo" class="logo2"> --}}
+        <img src="{{ asset('images/SIKOMTI.png') }}" alt="SIKOMTI Logo" class="logo">
+        <p class="subtitle">POLITEKNIK NEGERI MALANG</p>
+    </div>
+
+    <div class="content">
+        <p class="login-text">Login Sebagai:</p>
+        <div class="btn-container">
+            <a href="{{ url('login/admin') }}" class="btn admin">Admin</a>
+            <a href="{{ url('login/dosentendik') }}" class="btn dosen">Dosen/Tendik</a>
+            <a href="{{ url('login/mahasiswa') }}" class="btn mahasiswa">Mahasiswa</a>
         </div>
     </div>
+
     <footer>
-        ©2024 Sistem Kompetensi Jurusan
+        ©2024 Sistem Kompensasi Jurusan
     </footer>
+
 </body>
 
 </html>
