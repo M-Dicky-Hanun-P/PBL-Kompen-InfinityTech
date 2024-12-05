@@ -5,7 +5,7 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <button onclick="modalAction('{{ url('/dtDMAlpha/import') }}')" class="btn btn-success fa fa-plus-square"> Import Data</button>
+            <button onclick="modalAction('{{ url('/dtManageKompen/create') }}')" class="btn btn-success fa fa-plus-square"> Tambah Data</button>
         </div>
     </div>
     <div class="card-body">
@@ -19,14 +19,12 @@
             {{ session('error') }}
         </div>
         @endif
-        <table class="table table-bordered table-striped table-hover table-sm" id="tabel_alpha">
+        <table class="table table-bordered table-striped table-hover table-sm" id="tabel_manage_kompen">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Nama Mahasiswa</th>
-                    <th>Jumlah Alpha</th>
-                    <th>Semester</th>
-                    <th>Tahun Ajaran</th>
+                    <th>Level Kode</th>
+                    <th>Level Nama</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -49,20 +47,19 @@
         });
     }
 
-    var dataMAlpha;
+    var dataManageKompen;
 
     $(document).ready(function() {
         // Inisialisasi DataTable
-        dataMAlpha = $('#tabel_alpha').DataTable({
+        dataManageKompen = $('#tabel_manage_kompen').DataTable({
             processing: true, // Menampilkan loader
             serverSide: true, // Menggunakan server-side processing
             ajax: {
-                url: "{{ url('dtDMAlpha/list') }}", // Endpoint data
+                url: "{{ url('dtManageKompen/list') }}", // Endpoint data
                 type: "POST",
                 dataType: "json",
                 data: function(d) {
                     d._token = "{{ csrf_token() }}"; // Tambahkan token CSRF
-                    d.kode_level = $('#kode_level').val(); // Data filter
                 },
                 error: function(xhr, error, code) {
                     Swal.fire({
@@ -80,22 +77,12 @@
                     searchable: false
                 },
                 {
-                    data: "mahasiswa.nama",
+                    data: "level_kode",
                     orderable: true,
                     searchable: true
                 },
                 {
-                    data: "jumlah_alpha",
-                    orderable: true,
-                    searchable: true
-                },
-                {
-                    data: "periode.semester",
-                    orderable: true,
-                    searchable: true
-                },
-                {
-                    data: "periode.tahun_ajaran",
+                    data: "level_nama",
                     orderable: true,
                     searchable: true
                 },
@@ -106,12 +93,12 @@
                     searchable: false
                 }
             ],
-            order: [[1, 'asc']] // Mengurutkan berdasarkan kolom Nama Mahasiswa
+            order: [[1, 'asc']] // Mengurutkan berdasarkan kolom Level Kode
         });
 
-        // Reload tabel saat filter diubah
-        $('#kode_level').on('change', function() {
-            dataMAlpha.ajax.reload(); // Reload data
+        // Reload tabel setelah aksi modal selesai
+        $('#myModal').on('hidden.bs.modal', function() {
+            dataManageKompen.ajax.reload();
         });
     });
 </script>
