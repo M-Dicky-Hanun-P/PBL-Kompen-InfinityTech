@@ -8,6 +8,13 @@
             <span>{{ implode(' / ', $breadcrumb->list) }}</span>
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-body" style="background-color: #28A745; color: white;">
+            Selamat datang admin Fifi Novitasari
+        </div>
+    </div>
+
     <div class="card-body">
         <div class="row">
             <!-- Kartu Statistik -->

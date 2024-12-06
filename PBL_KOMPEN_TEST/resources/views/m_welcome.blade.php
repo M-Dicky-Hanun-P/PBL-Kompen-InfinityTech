@@ -4,8 +4,9 @@
 
 <div class="card">
     <div class="card-body" style="background-color: #28A745; color: white;">
-        Overview Kompen Kamu
+        Selamat datang admin Fifi Novitasari
     </div>
+</div>
 {{-- </div>
 @endsection --}}
 

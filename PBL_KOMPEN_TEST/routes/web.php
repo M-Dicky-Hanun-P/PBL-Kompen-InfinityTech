@@ -57,7 +57,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::get('/Mahasiswa', [WelcomeController::class, 'index']);
 
 // Welcome for Admin
-Route::get('/Admin', [aWelcomeController::class, 'index']);
+Route::get('/admin', [aWelcomeController::class, 'index'])->name('admin.dashboard');
 
 // Welcome for Dosen/Teknisi
 Route::get('/DosenTeknisi', [dtWelcomeController::class, 'index'])->name('dosenTeknisi.index');
