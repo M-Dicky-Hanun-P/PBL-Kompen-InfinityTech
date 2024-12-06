@@ -46,9 +46,12 @@ use Illuminate\Support\Facades\Route;
 // Landing Page
 Route::get('/', [LandingPageController::class, 'index']);
 
-// Login
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::post('login', [AuthController::class, 'postLogin']);
+// Login Mahasiswa
+Route::get('/login/mahasiswa', function () {
+    return view('mahasiswa.mLogin');
+})->name('login.mahasiswa');
+
+Route::post('/login/mahasiswa', [AuthController::class, 'loginMahasiswa']);
 
 // Logout
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');

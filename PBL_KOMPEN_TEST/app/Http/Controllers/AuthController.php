@@ -7,13 +7,35 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // Menampilkan halaman login
-    public function login(){
-        if(Auth::check()){
-            // Jika sudah login, arahkan ke dashboard berdasarkan role
-            return redirect()->route('dashboard');
+    // // Menampilkan halaman login
+    // public function login(){
+    //     if(Auth::check()){
+    //         // Jika sudah login, arahkan ke dashboard berdasarkan role
+    //         return redirect()->route('dashboard');
+    //     }
+    //     return view('auth.login');
+    // }
+
+    // Login Mahasiswa
+    public function loginMahasiswa(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        // Coba login
+        $credentials = $request->only('username', 'password');
+        if (Auth::attempt($credentials)) {
+            // Login berhasil, arahkan ke dashboard mahasiswa
+            return redirect()->route('dashboard.mahasiswa');
         }
-        return view('auth.login');
+
+        // Login gagal, kembali ke halaman login dengan pesan error
+        return back()->withErrors([
+            'loginError' => 'Username atau password salah.',
+        ]);
     }
 
     // Menangani login pengguna berdasarkan role
