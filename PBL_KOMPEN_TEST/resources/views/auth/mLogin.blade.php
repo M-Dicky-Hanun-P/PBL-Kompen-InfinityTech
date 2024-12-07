@@ -8,6 +8,13 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <style>
+    <form action="{{ route('login.mahasiswa') }}" method="POST">
+    @csrf
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+</form>
+
         body {
             margin: 0;
             padding: 0;

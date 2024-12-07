@@ -47,11 +47,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LandingPageController::class, 'index']);
 
 // Login Mahasiswa
-Route::get('/login/mahasiswa', function () {
-    return view('mahasiswa.mLogin');
-})->name('login.mahasiswa');
-
+Route::get('/login/mahasiswa', [AuthController::class, 'showMahasiswaLogin'])->name('login.mahasiswa');
 Route::post('/login/mahasiswa', [AuthController::class, 'loginMahasiswa']);
+
+// Login Admin
+Route::get('/login/admin', [AuthController::class, 'showAdminLogin'])->name('login.admin');
+Route::post('/login/admin', [AuthController::class, 'loginAdmin']);
+
+// Login Dosen/Teknisi
+Route::get('/login/dosen-teknisi', [AuthController::class, 'showDosenTeknisiLogin'])->name('login.dosen.teknisi');
+Route::post('/login/dosen-teknisi', [AuthController::class, 'loginDosenTeknisi']);
+
 
 // Logout
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
