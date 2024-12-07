@@ -152,14 +152,14 @@
         {{-- <h3>Login Mahasiswa</h3> --}}
         <form action="{{ route('login.mahasiswa') }}" method="POST">
             @csrf <!-- Tambahkan token CSRF -->
-            <input type="text" name="username" class="form-control" placeholder="Username" required>
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
             <input type="text" name="nim" class="form-control" placeholder="NIM" required>
             <input type="text" name="namalengkap" class="form-control" placeholder="Nama Lengkap" required>
             <input type="text" name="tahunmasuk" class="form-control" placeholder="Tahun Masuk" required>
             <input type="text" name="programstudi" class="form-control" placeholder="Program Studi" required>
             <input type="text" name="email" class="form-control" placeholder="Email" required>
             <input type="text" name="notelephone" class="form-control" placeholder="Nomor Telephone" required>
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
+            <input type="password" name="password" class="form-control" placeholder="Password" required>
             <div style="margin-bottom: 10px;">
                 <input type="checkbox" id="show-password" onclick="togglePassword()"> Tampilkan Password
             </div>
