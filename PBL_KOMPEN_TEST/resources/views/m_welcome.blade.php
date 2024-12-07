@@ -25,20 +25,7 @@
             </div>
         </div>
 
-        <!-- Kompen Berlangsung -->
-        <div class="col-md-4 col-sm-6 col-12">
-            <div class="info-box text-bg-warning">
-                <span class="info-box-icon">
-                    <i class="bi bi-hourglass-split"></i>
-                </span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Kompen Berlangsung</span>
-                    <span class="info-box-number">8 Jam</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Kompen Selesai -->
+       <!-- Kompen Selesai -->
         <div class="col-md-4 col-sm-6 col-12">
             <div class="info-box text-bg-success">
                 <span class="info-box-icon">
