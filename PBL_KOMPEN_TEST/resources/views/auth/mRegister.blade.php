@@ -163,7 +163,7 @@
             <div style="margin-bottom: 10px;">
                 <input type="checkbox" id="show-password" onclick="togglePassword()"> Tampilkan Password
             </div>
-            <button type="submit" class="btn-login">Login</button>
+            <button type="submit" class="btn-login">Registrasi</button>
         </form>
         <div class="footer">
             
