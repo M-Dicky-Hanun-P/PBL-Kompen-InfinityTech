@@ -17,37 +17,37 @@
 
         /* Header dengan setengah lingkaran biru */
         .header-background {
-            background-color: #001c41;
+            background-color: #0E1F43;
             width: 100%;
-            height: 300px;
-            border-bottom-left-radius: 150px;
-            border-bottom-right-radius: 150px;
+            height: 30vh; /* Ubah tinggi menjadi 45vh */
+            border-bottom-left-radius: 85% 85%; /* Lengkungan ke tengah */
+            border-bottom-right-radius: 85% 85%; /* Lengkungan ke tengah */
             position: relative;
             text-align: center;
             color: #fff;
-            padding-top: 50px;
+            padding-top: 30px; /* Tambahkan padding atas */
         }
 
-        .header-background h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+        .header-background img {
+            max-width: 300px;
+            margin: 0 auto;
         }
 
-        .header-background h2 {
-            font-size: 1.2rem;
-            font-weight: normal;
+        .header-background p {
+            font-size: 1.5rem;
+            margin-top: 10px;
         }
 
         /* Kontainer form login */
         .login-container {
             margin-top: -80px;
-            max-width: 400px;
+            max-width: 400px; /* Ubah lebar kotak di sini */
+            margin: 0 auto;
+            padding: 20px;
             background: #fff;
-            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-left: auto;
-            margin-right: auto;
+            
         }
 
         .login-container h3 {
@@ -57,27 +57,60 @@
             color: #001c41;
         }
 
-        .form-control {
+        /* .form-control {
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        } */
+
+        .form-control {
+            width: 90%; /* Lebar input */
+            padding: 10px;
+            margin: 15px auto;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
-        .btn-login {
+
+        /* .btn-login {
             width: 100%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #28a745;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1rem;
+        } */
+
+        .btn-login {
+            /* width: 80%; /* Samakan dengan .form-control */
+            /* padding: 8px;
+            margin: 10px auto;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer; */ 
+
+            display: block; /* Ubah tombol menjadi elemen blok */
+            width: 80%; /* Samakan lebar dengan input Username dan Password */
+            margin: 10px auto; /* Pusatkan secara horizontal */
+            padding: 10px; /* Sesuaikan ukuran padding */
+            background-color: #28a745; /* Warna hijau */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            text-align: center; /* Pastikan teks tombol di tengah */
+            cursor: pointer;
         }
 
         .btn-login:hover {
-            background-color: #0056b3;
+            background-color: #218838;
         }
 
         .footer {
@@ -92,8 +125,16 @@
             text-decoration: none;
         }
 
-        .footer a:hover {
-            text-decoration: underline;
+        footer {
+            position: fixed;
+            bottom: 0; /* Letakkan di bagian bawah layar */
+            left: 0; /* Mulai dari sisi kiri */
+            width: 100%; /* Lebar penuh halaman */
+            background-color: #0E1F43; /* Warna latar footer */
+            color: white; /* Warna teks footer */
+            text-align: center; /* Teks di tengah */
+            padding: 1rem; /* Spasi dalam */
+            font-size: 0.9rem; /* Ukuran teks */
         }
     </style>
 </head>
@@ -101,14 +142,15 @@
 <body>
     <!-- Header -->
     <div class="header-background">
-        <h1>SIKOMTI</h1>
-        <h2>Sistem Kompensasi Teknologi Informasi</h2>
+        <img src="{{ asset('images/SIKOMTI.png') }}" alt="SIKOMTI Logo">
+        <h1>LOGIN ADMIN</h1>
+
     </div>
 
     <!-- Form Login -->
     <div class="login-container">
-        <h3>Login Admin</h3>
-        <form action="/login/admin" method="POST">
+        {{-- <h3>Login Mahasiswa</h3> --}}
+        <form action="{{ route('login.admin') }}" method="POST">
             @csrf <!-- Tambahkan token CSRF -->
             <input type="text" name="username" class="form-control" placeholder="Username" required>
             <input type="password" name="password" class="form-control" placeholder="Password" required>
@@ -118,16 +160,14 @@
             <button type="submit" class="btn-login">Login</button>
         </form>
         <div class="footer">
-            <p>2024 &copy; Sistem Kompensasi Jurusan</p>
+            {{-- <p><a href="/register">Registrasi Mahasiswa?</a></p> --}}
+            
         </div>
-        <form action="{{ route('login.admin') }}" method="POST">
-              @csrf
-              <input type="text" name="username" placeholder="Username" required>
-              <input type="password" name="password" placeholder="Password" required>
-              <button type="submit">Login</button>
-          </form>
-          
     </div>
+
+    <footer>
+        ©2024 Sistem Kompensasi Jurusan
+    </footer>
 
     <script>
         function togglePassword() {

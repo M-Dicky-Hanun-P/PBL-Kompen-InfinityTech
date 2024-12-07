@@ -2,17 +2,16 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\aAdminController;
 use App\Http\Controllers\aBidangKompetensiController;
-use App\Http\Controllers\aDosenController;
 use App\Http\Controllers\aLevelController;
 use App\Http\Controllers\aMahasiswaAlphaController;
 use App\Http\Controllers\aMahasiswaController;
 use App\Http\Controllers\aManageBidKomController;
-use App\Http\Controllers\aTendikController;
 use App\Http\Controllers\aWelcomeController;
 use App\Http\Controllers\dtDMAlphaController;
 use App\Http\Controllers\dtDMKompenController;
 use App\Http\Controllers\dtManageKompenController;
 use App\Http\Controllers\dtUpdateKompenController;
+use App\Http\Controllers\dtLoginController;
 use App\Http\Controllers\dtWelcomeController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LihatPilihKompenController;
@@ -50,14 +49,19 @@ Route::get('/', [LandingPageController::class, 'index']);
 Route::get('/login/mahasiswa', [AuthController::class, 'showMahasiswaLogin'])->name('login.mahasiswa');
 Route::post('/login/mahasiswa', [AuthController::class, 'loginMahasiswa']);
 
+// Register Mahasiswa
+Route::get('/login/mahasiswa/register', [AuthController::class, 'showMahasiswaRegister'])->name('register.mahasiswa');
+Route::post('/login/mahasiswa/register', [AuthController::class, 'registerMahasiswa']);
+
 // Login Admin
 Route::get('/login/admin', [AuthController::class, 'showAdminLogin'])->name('login.admin');
 Route::post('/login/admin', [AuthController::class, 'loginAdmin']);
 
-// Login Dosen/Teknisi
-Route::get('/login/dosen-teknisi', [AuthController::class, 'showDosenTeknisiLogin'])->name('login.dosen.teknisi');
-Route::post('/login/dosen-teknisi', [AuthController::class, 'loginDosenTeknisi']);
+// Tampilkan halaman login dosen/teknisi
+Route::get('/login/dosentendik', [AuthController::class, 'showDosenTendikLogin'])->name('login.dosen.tendik');
 
+// Proses login dosen/teknisi
+Route::post('/login/dosentendik', [AuthController::class, 'dosentendikLogin'])->name('login.dosentendik');
 
 // Logout
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
@@ -176,31 +180,31 @@ Route::group(['prefix' => 'aAdmin'], function () {
     Route::delete('/{id}/delete_ajax', [aAdminController::class, 'delete_ajax']);
 });
 
-// user dosen
-Route::group(['prefix' => 'aDosen'], function () {
-    Route::get('/', [aDosenController::class, 'index']);
-    Route::post('/list', [aDosenController::class, 'list']);
-    Route::get('/{id}/show_ajax', [aDosenController::class, 'show_ajax']);
-    Route::get('/create_ajax', [aDosenController::class, 'create_ajax']);
-    Route::post('/ajax', [aDosenController::class, 'store_ajax']);
-    Route::get('{id}/edit_ajax', [aDosenController::class, 'edit_ajax']);
-    Route::put('/{id}/update_ajax', [aDosenController::class, 'update_ajax']);
-    Route::get('/{id}/delete_ajax', [aDosenController::class, 'confirm_ajax']);
-    Route::delete('/{id}/delete_ajax', [aDosenController::class, 'delete_ajax']);
-});
+// // user dosen
+// Route::group(['prefix' => 'aDosen'], function () {
+//     Route::get('/', [aDosenTendikController::class, 'index']);
+//     Route::post('/list', [aDosenController::class, 'list']);
+//     Route::get('/{id}/show_ajax', [aDosenController::class, 'show_ajax']);
+//     Route::get('/create_ajax', [aDosenController::class, 'create_ajax']);
+//     Route::post('/ajax', [aDosenController::class, 'store_ajax']);
+//     Route::get('{id}/edit_ajax', [aDosenController::class, 'edit_ajax']);
+//     Route::put('/{id}/update_ajax', [aDosenController::class, 'update_ajax']);
+//     Route::get('/{id}/delete_ajax', [aDosenController::class, 'confirm_ajax']);
+//     Route::delete('/{id}/delete_ajax', [aDosenController::class, 'delete_ajax']);
+// });
 
-// user tendik
-Route::group(['prefix' => 'aTendik'], function () {
-    Route::get('/', [aTendikController::class, 'index']);
-    Route::post('/list', [aTendikController::class, 'list']);
-    Route::get('/{id}/show_ajax', [aTendikController::class, 'show_ajax']);
-    Route::get('/create_ajax', [aTendikController::class, 'create_ajax']);
-    Route::post('/ajax', [aTendikController::class, 'store_ajax']);
-    Route::get('{id}/edit_ajax', [aTendikController::class, 'edit_ajax']);
-    Route::put('/{id}/update_ajax', [aTendikController::class, 'update_ajax']);
-    Route::get('/{id}/delete_ajax', [aTendikController::class, 'confirm_ajax']);
-    Route::delete('/{id}/delete_ajax', [aTendikController::class, 'delete_ajax']);
-});
+// // user tendik
+// Route::group(['prefix' => 'aTendik'], function () {
+//     Route::get('/', [aTendikController::class, 'index']);
+//     Route::post('/list', [aTendikController::class, 'list']);
+//     Route::get('/{id}/show_ajax', [aTendikController::class, 'show_ajax']);
+//     Route::get('/create_ajax', [aTendikController::class, 'create_ajax']);
+//     Route::post('/ajax', [aTendikController::class, 'store_ajax']);
+//     Route::get('{id}/edit_ajax', [aTendikController::class, 'edit_ajax']);
+//     Route::put('/{id}/update_ajax', [aTendikController::class, 'update_ajax']);
+//     Route::get('/{id}/delete_ajax', [aTendikController::class, 'confirm_ajax']);
+//     Route::delete('/{id}/delete_ajax', [aTendikController::class, 'delete_ajax']);
+// });
 
 // daftar mahasiswa alpha
 Route::group(['prefix' => 'aMahasiswaAlpha'], function () {
