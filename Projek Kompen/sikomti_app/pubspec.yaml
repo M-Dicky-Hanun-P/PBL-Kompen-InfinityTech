@@ -12,11 +12,12 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   image_picker: ^1.1.2
-  shared_preferences: ^2.3.2
   file_picker: ^5.0.0
   path: ^1.8.0
   percent_indicator: ^4.2.3
   http: ^1.2.2
+  shared_preferences: ^2.3.3
+  font_awesome_flutter: ^10.8.0
   
 
 dev_dependencies:

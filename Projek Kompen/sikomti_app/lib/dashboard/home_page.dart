@@ -1,44 +1,24 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sikomti_app/fitur_sidebar/lihat_dan_pilih_kompen/lihat_kompen_page.dart';
 import 'package:sikomti_app/fitur_sidebar/update_progres_tugas_kompen/tugas_on_the_go.dart';
 import 'package:sikomti_app/proses_log&res/login_page.dart';
 import 'package:sikomti_app/fitur_sidebar/upload_berita_acara/upload_berkas_berita_acara.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
-  final String username;
-  const HomePage({super.key, required this.username});
+  final User user;
+  const HomePage({super.key, required this.user});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  XFile? _profileImage;
-
   @override
-  void initState() {
-    super.initState();
-    _loadProfileImage();
-  }
-
-  Future<void> _loadProfileImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final imagePath = prefs.getString('profileImagePath');
-    if (imagePath != null) {
-      setState(() {
-        _profileImage = XFile(imagePath);
-      });
-    }
-  }
-
-  Future<void> _saveProfileImage(String path) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('profileImagePath', path);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,35 +49,32 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 8),
                 child: Row(
                   children: [
-                    CircleAvatar(
-                      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-                      backgroundImage: _profileImage != null
-                          ? FileImage(File(_profileImage!.path))
-                          : null,
-                      child: _profileImage == null
-                          ? const Icon(Icons.person, color: Colors.white)
-                          : null,
+                    const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Color.fromARGB(255, 90, 156, 242),
+                      child: Icon(FontAwesomeIcons.userAlt,
+                          size: 23, color: Colors.white),
                     ),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.username,
+                          widget.user.username,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 19,
                           ),
                         ),
                         GestureDetector(
-                          onTap: () => _showEditProfileDialog(context),
+                          onTap: () => _showProfileDialog(context),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.lightBlue,
+                              color: const Color(0xFF5BC0DE),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: const Text(
@@ -126,21 +103,24 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.assignment, color: Colors.white),
+                leading:
+                    const Icon(Icons.task, color: Colors.white), // Ikon Tugas
                 title: const Text(
                   'Lihat dan Pilih Kompen',
                   style: TextStyle(color: Colors.white),
                 ),
                 onTap: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const LihatKompenPage()),
+                      builder: (context) => LihatKompenPage(user: widget.user),
+                    ),
                   );
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.update, color: Colors.white),
+                leading: const Icon(Icons.update,
+                    color: Colors.white), // Ikon Update
                 title: const Text(
                   'Update Progres Tugas Kompen',
                   style: TextStyle(color: Colors.white),
@@ -149,12 +129,14 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const TugasOnTheGo()),
+                      builder: (context) => TugasOnTheGo(user: widget.user),
+                    ),
                   );
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.edit_document, color: Colors.white),
+                leading: const Icon(Icons.file_upload,
+                    color: Colors.white), // Ikon Upload
                 title: const Text(
                   'Upload Berita Acara',
                   style: TextStyle(color: Colors.white),
@@ -163,7 +145,9 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => UploadBerkasBeritaAcara()),
+                      builder: (context) =>
+                          UploadBerkasBeritaAcara(user: widget.user),
+                    ),
                   );
                 },
               ),
@@ -172,12 +156,22 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(20),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
+                    // Menampilkan Snackbar dengan pesan logout
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Berhasil Logout',
+                        ),
                       ),
                     );
+                    Future.delayed(const Duration(seconds: 1), () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    });
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
@@ -276,40 +270,127 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<void> _showEditProfileDialog(BuildContext context) async {
-    final updatedProfileImage = await showDialog<XFile?>(
+  Future<Map<String, dynamic>> getProfileData() async {
+    final url = Uri.parse(
+        'http://10.0.2.2:8000/api/detailMHS/${widget.user.id_mahasiswa}');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load profile');
+    }
+  }
+
+  Future<void> _showProfileDialog(BuildContext context) async {
+    try {
+      final profileData = await getProfileData();
+      await showDialog(
+        context: context,
+        builder: (context) => ProfilePageDialog(
+          username: widget.user.username,
+          nama: profileData['nama'] ?? '',
+          email: widget.user.email,
+          no_telepon: profileData['no_telepon'] ?? '',
+          password: profileData['password'] ?? '',
+        ),
+      );
+    } catch (e) {
+      print("Error fetching profile: $e");
+    }
+  }
+}
+
+class ProfilePage extends StatefulWidget {
+  final String id_mahasiswa; // Tambahkan parameter userId untuk API
+  const ProfilePage({super.key, required this.id_mahasiswa});
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  late String username = '';
+  late String nama = '';
+  late String email = '';
+  late String no_telepon;
+  late String password = '';
+  late String bidangKompetensi = 'Coding Mobile Flutter'; // Default value
+
+  Future<void> _fetchUserData() async {
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/api/detailMHS/${widget.id_mahasiswa}'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      setState(() {
+        username = data['username'];
+        nama = data['nama'];
+        email = data['email'];
+        no_telepon = data['no_telepon'];
+        password = data['password'];
+      });
+    } else {
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to fetch user data!')),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _showProfileDialog(BuildContext context) async {
+    await showDialog(
       context: context,
       builder: (context) => ProfilePageDialog(
-        username: widget.username,
-        email: 'mahasiswa@gmail.com',
-        phone: '08123456789',
-        password: 'mahasiswa123',
-        bidangKompetensi: 'Coding Mobile Flutter',
+        username: username,
+        nama: nama,
+        email: email,
+        no_telepon: no_telepon, // Tidak perlu mengubah int ke String
+        password: password,
+        // bidangKompetensi: bidangKompetensi,
       ),
     );
-    if (updatedProfileImage != null) {
-      setState(() {
-        _profileImage = updatedProfileImage;
-      });
-      _saveProfileImage(updatedProfileImage.path);
-    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Profile'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => _showProfileDialog(context),
+          child: const Text('Edit Profile'),
+        ),
+      ),
+    );
   }
 }
 
 class ProfilePageDialog extends StatelessWidget {
   final String username;
+  final String nama;
   final String email;
-  final String phone;
+  final String no_telepon;
   final String password;
-  final String bidangKompetensi;
+  // final String bidangKompetensi;
 
   const ProfilePageDialog({
     super.key,
     required this.username,
+    required this.nama,
     required this.email,
-    required this.phone,
+    required this.no_telepon,
     required this.password,
-    required this.bidangKompetensi,
+    // required this.bidangKompetensi,
   });
 
   @override
@@ -323,9 +404,10 @@ class ProfilePageDialog extends StatelessWidget {
           Row(
             children: [
               const CircleAvatar(
-                radius: 40,
-                backgroundColor: Colors.grey,
-                child: Icon(Icons.person, size: 40, color: Colors.white),
+                radius: 25,
+                backgroundColor: Color.fromARGB(183, 90, 156, 242),
+                child: Icon(FontAwesomeIcons.userAlt,
+                    size: 29, color: Colors.white),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -361,9 +443,25 @@ class ProfilePageDialog extends StatelessWidget {
               fontSize: 16,
             ),
           ),
+          const SizedBox(height: 10),
+          // const Divider(color: Colors.black54, height: 20),
+
+          // Nama
+          Row(
+            children: [
+              const Icon(Icons.alternate_email,
+                  size: 20, color: Colors.blueAccent),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Nama: $nama',
+                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 1),
           const Divider(color: Colors.black54, height: 20),
-
           // Email
           Row(
             children: [
@@ -389,40 +487,118 @@ class ProfilePageDialog extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'No Telepon: $phone',
+                  'No Telepon: $no_telepon',
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                 ),
               ),
             ],
           ),
+
           const SizedBox(height: 1),
-          const Divider(color: Colors.black54, height: 20),
+          const Divider(color: Colors.black54, height: 15),
+
+          // Informasi Password dengan Tombol Ikon Mata
+          const Row(
+            mainAxisAlignment: MainAxisAlignment
+                .spaceBetween, // Memberikan jarak antara teks dan tombol
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.lock, size: 20, color: Colors.orange),
+                  SizedBox(width: 10),
+                  Text(
+                    'Password: ********', // Menampilkan password tersembunyi
+                    style: TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ],
+              ),
+              // IconButton(
+              //   icon: const Icon(Icons.visibility,
+              //       color: Colors.blue),
+              //   onPressed: () {
+              //     showDialog(
+              //       context: context,
+              //       builder: (BuildContext context) {
+              //         return AlertDialog(
+              //           title: const Text(
+              //             'Informasi Password',
+              //             style: TextStyle(
+              //                 fontSize: 16, fontWeight: FontWeight.bold),
+              //           ),
+              //           content: const Text(
+              //             'Password hanya bisa dilihat di aplikasi website.',
+              //             style: TextStyle(
+              //                 fontSize: 14, fontStyle: FontStyle.italic),
+              //           ),
+              //           actions: [
+              //             ElevatedButton(
+              //               style: ElevatedButton.styleFrom(
+              //                 backgroundColor: Colors.blue[800], // Warna tombol
+              //                 foregroundColor:
+              //                     Colors.white, // Warna teks tombol
+              //                 padding: const EdgeInsets.symmetric(
+              //                     horizontal: 12, vertical: 6),
+              //                 shape: RoundedRectangleBorder(
+              //                   borderRadius: BorderRadius.circular(12),
+              //                 ),
+              //                 elevation: 5,
+              //               ),
+              //               onPressed: () {
+              //                 Navigator.of(context).pop(); // Menutup dialog
+              //               },
+              //               child: const Text(
+              //                 'OK',
+              //                 style: TextStyle(
+              //                     fontSize: 14, fontWeight: FontWeight.bold),
+              //               ),
+              //             ),
+              //           ],
+              //         );
+              //       },
+              //     );
+              //   },
+              // ),
+            ],
+          ),
+
+          const SizedBox(height: 2),
+          const Divider(color: Colors.black54, height: 15),
 
           Row(
+            mainAxisAlignment: MainAxisAlignment
+                .spaceBetween, // Memberikan jarak antara teks dan tombol
             children: [
-              const Icon(Icons.lock, size: 20, color: Colors.orange),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Password: ${'*' * password.length}', // Menampilkan password tersembunyi
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                ),
+              const Row(
+                children: [
+                  Icon(Icons.school,
+                      size: 20,
+                      color: Colors
+                          .green), // Sesuaikan ikon untuk bidang kompetensi
+                  SizedBox(width: 10),
+                  Text(
+                    'Bidang Kompetensi: ***', // Menampilkan bidang kompetensi tersembunyi
+                    style: TextStyle(fontSize: 14, color: Colors.black87),
+                  ),
+                ],
               ),
-              TextButton(
+              IconButton(
+                icon: const Icon(Icons.visibility,
+                    color: Colors.blue), // Ganti teks dengan ikon mata
                 onPressed: () {
                   // Menampilkan pesan menggunakan dialog
                   showDialog(
-                    context: context, 
+                    context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text(
-                          'Informasi Password',
+                          'Informasi Bidang Kompetensi',
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         content: const Text(
-                          'Password hanya bisa dilihat di aplikasi website.',
-                          style: TextStyle(fontSize: 14),
+                          'Bidang Kompetensi hanya bisa dilihat di aplikasi website.',
+                          style: TextStyle(
+                              fontSize: 14, fontStyle: FontStyle.italic),
                         ),
                         actions: [
                           ElevatedButton(
@@ -451,50 +627,12 @@ class ProfilePageDialog extends StatelessWidget {
                     },
                   );
                 },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.blueAccent, width: 2),
-                    gradient: const LinearGradient(
-                      colors: [Colors.blue, Colors.blueAccent],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: const Text(
-                    'Lihat Password',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              )
+              ),
             ],
           ),
 
           const SizedBox(height: 1),
-          const Divider(color: Colors.black54, height: 20),
-
-          // Bidang Kompetensi
-          Row(
-            children: [
-              const Icon(Icons.school, size: 20, color: Colors.purple),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Bidang Kompetensi: $bidangKompetensi',
-                  style: const TextStyle(
-                      fontSize: 13,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
+          const Divider(color: Colors.black54, height: 1),
         ],
       ),
       actions: [
@@ -505,7 +643,7 @@ class ProfilePageDialog extends StatelessWidget {
               backgroundColor: Colors.blue[800], // Warna latar tombol
               foregroundColor: Colors.white, // Warna teks tombol
               padding: const EdgeInsets.symmetric(
-                  horizontal: 20, vertical: 10), // Padding dalam tombol
+                  horizontal: 10, vertical: 5), // Padding dalam tombol
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12), // Sudut melingkar
               ),

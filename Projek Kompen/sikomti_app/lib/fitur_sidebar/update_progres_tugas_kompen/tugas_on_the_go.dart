@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sikomti_app/dashboard/home_page.dart';
 import 'package:sikomti_app/fitur_sidebar/update_progres_tugas_kompen/upload_progress.dart';
+import 'package:sikomti_app/proses_log&res/login_page.dart';
 
 class TugasOnTheGo extends StatelessWidget {
-  const TugasOnTheGo({super.key});
+  final User user;  // Deklarasikan properti user di sini
 
+  // Konstruktor menerima parameter user
+  const TugasOnTheGo({super.key, required this.user});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,9 +23,8 @@ class TugasOnTheGo extends StatelessWidget {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => const HomePage(
-                        username: 'mahasiswa',
-                      )),
+                builder: (context) => HomePage(user: user),
+              ),
             );
           },
         ),
@@ -57,12 +59,12 @@ class TugasOnTheGo extends StatelessWidget {
                           Text(
                             'Bongkar pasang CPU',
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
-                            'On Progress',
+                            'Your Progress',
                             style: TextStyle(
                               fontSize: 14,
                               fontStyle: FontStyle.italic,
@@ -118,7 +120,7 @@ class TugasOnTheGo extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          '*dapat diunduh apabila telah selesai mengerjakan penugasan kompen',
+                          '*Dapat diunduh apabila telah selesai mengerjakan penugasan kompen',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,
@@ -215,25 +217,6 @@ class TugasOnTheGo extends StatelessWidget {
           ),
         ],
       ),
-      // bottomNavigationBar: Container(
-      //   width: double.infinity,
-      //   padding: const EdgeInsets.all(16.0),
-      //   decoration: const BoxDecoration(
-      //     color: Color(0xFF0E1F43),
-      //     borderRadius: BorderRadius.only(
-      //       topLeft: Radius.circular(20),
-      //       topRight: Radius.circular(20),
-      //     ),
-      //   ),
-      //   child: const Text(
-      //     '2024© Sistem Kompensasi Jurusan',
-      //     textAlign: TextAlign.center,
-      //     style: TextStyle(
-      //       color: Colors.white,
-      //       fontSize: 14,
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

@@ -40,44 +40,88 @@ class _UploadProgressState extends State<UploadProgress> {
     });
   }
 
-  // Menampilkan popup ketika tombol Update ditekan
+// Menampilkan popup ketika tombol Update ditekan
   void _showSuccessPopup() {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(20.0),
           ),
-          title: const Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: 80,
-          ),
-          content: const Text(
-            'Berhasil update progres',
-            textAlign: TextAlign.center,
-          ),
-          actions: [
-            Center(
-                child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0074D9),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
+          contentPadding: EdgeInsets.zero, // Menghilangkan padding default
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header Pop-Up
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: const BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0),
+                  ),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Pemberitahuan',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-              child: const Text(
-                'OK',
-                style: TextStyle(color: Colors.white), // warna teks tombol
+
+              // Isi Pop-Up
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.info_outline, // Menggunakan ikon peringatan
+                      color: Color.fromARGB(255, 252, 112, 65), // Warna kuning untuk ikon peringatan
+                      size: 90,
+                    ),
+                    SizedBox(height: 12.0),
+                    Text(
+                      'Progres tugas hanya bisa di update pada aplikasi website.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic, // Font italic
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            )),
-          ],
+
+              // Tombol OK
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Menutup dialog
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0074D9),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                  ),
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white), // warna teks tombol
+                  ),
+                ),
+              ),
+            ],
+          ),
         );
       },
     );
@@ -148,11 +192,10 @@ class _UploadProgressState extends State<UploadProgress> {
                       backgroundColor: Colors.grey.shade300,
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      data['progress'] >= 100 ? 'Finished' : 'On Progress',
-                      style: const TextStyle(
+                    const Text(
+                      'Your Progress',
+                      style: TextStyle(
                         fontSize: 14,
-                        color: Color.fromARGB(255, 0, 0, 0),
                         fontStyle: FontStyle.italic,
                       ),
                     ),
@@ -236,39 +279,40 @@ class _UploadProgressState extends State<UploadProgress> {
                 ),
               ),
             ),
+            // const SizedBox(height: 13),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.start,
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: [
+            //     const Text(
+            //       'Progres Pengerjaan',
+            //       style: TextStyle(
+            //         fontWeight: FontWeight.bold,
+            //         fontSize: 16,
+            //       ),
+            //     ),
+            //     // IconButton(
+            //     //   onPressed: () => _updateProgress(data['progress'] - 5),
+            //     //   icon: const Icon(Icons.arrow_circle_down_outlined),
+            //     //   color: const Color.fromARGB(255, 0, 0, 0),
+            //     // ),
+            //     // Text(
+            //     //   '${data['progress'].toInt()} %',
+            //     //   style: const TextStyle(fontSize: 16),
+            //     // ),
+            //     // IconButton(
+            //     //   onPressed: () => _updateProgress(data['progress'] + 5),
+            //     //   icon: const Icon(Icons.arrow_circle_up_outlined),
+            //     //   color: const Color.fromARGB(255, 4, 4, 4),
+            //     // ),
+            //   ],
+            // ),
             const SizedBox(height: 13),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Progres Pengerjaan',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => _updateProgress(data['progress'] - 5),
-                  icon: const Icon(Icons.arrow_circle_down_outlined),
-                  color: const Color.fromARGB(255, 0, 0, 0),
-                ),
-                Text(
-                  '${data['progress'].toInt()} %',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                IconButton(
-                  onPressed: () => _updateProgress(data['progress'] + 5),
-                  icon: const Icon(Icons.arrow_circle_up_outlined),
-                  color: const Color.fromARGB(255, 4, 4, 4),
-                ),
-              ],
-            ),
             Center(
               child: ElevatedButton(
                 onPressed: _showSuccessPopup,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0074D9),
+                  backgroundColor: const Color.fromARGB(255, 250, 12, 12),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
                     vertical: 12,

@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http; // Tambahkan ini untuk menggunakan http
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:sikomti_app/proses_log&res/landing_page.dart';
 import 'package:sikomti_app/proses_log&res/register_page.dart';
-import 'landing_page.dart';
 import 'login_as.dart';
 import 'package:sikomti_app/dashboard/home_page.dart';
 
@@ -22,47 +22,40 @@ class _LoginPageState extends State<LoginPage> {
   String _errorMessage = '';
 
   // Fungsi login yang akan mengirimkan permintaan ke API backend
-  Future<void> login() async {
-    String username = _usernameController.text;
-    String password = _passwordController.text;
-
-    const String url =
-        'http://127.0.0.1:8000/api/login';
-
+  Future<User?> login(String username, String password) async {
     try {
       final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'username': username,
-          'password': password,
-        }),
+        Uri.parse('http://10.0.2.2:8000/api/login'), // Verify this URL
+        body: {'username': username, 'password': password},
       );
+
+      print('Status code: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        final user = User.fromJson(data['user']);
+
+        // Menampilkan SnackBar dengan pesan username berhasil login
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Pesan: ${data['message']}')),
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => HomePage(username: username),
+          SnackBar(
+            content: Text('${user.username}: Berhasil Login'),
+            duration: const Duration(seconds: 3),
           ),
         );
+
+        return user;
       } else {
-        final data = json.decode(response.body);
         setState(() {
-          _errorMessage = data['error'] ?? 'Login gagal';
+          _errorMessage = ' ${response.body}';
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_errorMessage)),
-        );
+        return null;
       }
     } catch (e) {
+      print('Login error: $e');
       setState(() {
-        _errorMessage = 'Terjadi kesalahan, coba lagi nanti';
+        _errorMessage = 'Error: $e';
       });
+      return null;
     }
   }
 
@@ -216,9 +209,22 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           width: 100,
                           child: ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                login();
+                            onPressed: () async {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                final user = await login(
+                                  _usernameController.text,
+                                  _passwordController.text,
+                                );
+
+                                if (user != null) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          HomePage(user: user),
+                                    ),
+                                  );
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -269,6 +275,30 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class User {
+  final String username;
+  final int id_mahasiswa;
+  final String nama;
+  final String email;
+
+  User({
+    required this.username,
+    required this.id_mahasiswa,
+    required this.nama,
+    required this.email,
+  });
+
+  // Convert JSON to User object
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      username: json['username'],
+      id_mahasiswa: json['id_mahasiswa'],
+      nama: json['nama'],
+      email: json['email'],
     );
   }
 }

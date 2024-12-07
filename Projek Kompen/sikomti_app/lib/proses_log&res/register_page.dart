@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sikomti_app/proses_log&res/login_page.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -12,30 +13,71 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _showPassword = false;
   final _formKey = GlobalKey<FormState>();
 
+  Future<void> registerUser() async {
+    if (_formKey.currentState!.validate()) {
+      final url = Uri.parse('http://10.0.2.2:8000/api/register');
+
+      var request = http.MultipartRequest('POST', url);
+      request.fields['nim'] = _nimController.text;
+      request.fields['nama'] = _namaLengkapController.text;
+      request.fields['email'] = _emailController.text;
+      request.fields['no_telepon'] = _nomorTeleponController.text;
+      request.fields['username'] = _usernameController.text;
+      request.fields['password'] = _passwordController.text;
+      request.fields['password_confirmation'] =
+          _konfirmasipasswordController.text;
+      request.fields['prodi'] = _selectedProgramStudi ?? '';
+      request.fields['tahun_masuk'] = _selectedTahunMasuk ?? '';
+
+      try {
+        final response = await request.send();
+        if (response.statusCode == 201) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Registrasi berhasil!')),
+            );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+          }
+        } else {
+          final responseString = await response.stream.bytesToString();
+          print('Registrasi gagal: $responseString');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Registrasi gagal: $responseString')),
+            );
+          }
+        }
+      } catch (error) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Terjadi kesalahan jaringan')),
+          );
+        }
+      }
+    }
+  }
+
   final TextEditingController _nimController = TextEditingController();
   final TextEditingController _namaLengkapController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nomorTeleponController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _konfirmasipasswordController =
+      TextEditingController();
 
   String? _selectedProgramStudi;
   String? _selectedTahunMasuk;
 
-  final List<String> _programStudiList = [
-    'D4 TI',
-    'D4 SIB',
-    'D2 PPLS'
-  ];
+  final List<String> _programStudiList = ['D4 TI', 'D4 SIB', 'D2 PPLS'];
 
   final List<String> _tahunMasukList = ['2021', '2022', '2023', '2024'];
 
   void _register() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Belum ada Database')),
-      );
-    }
+    registerUser();
   }
 
   @override
@@ -190,6 +232,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         validator: (value) {
                           if (value?.isEmpty ?? true) {
                             return 'Email tidak boleh kosong';
+                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                              .hasMatch(value!)) {
+                            return 'Format email tidak valid';
                           }
                           return null;
                         },
@@ -217,6 +262,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         obscureText: !_showPassword,
                         validator: (value) => value?.isEmpty ?? true
                             ? 'Password tidak boleh kosong'
+                            : null,
+                      ),
+                      _buildFormField(
+                        controller: _konfirmasipasswordController,
+                        label: 'Konfirmasi Password',
+                        hintText: 'Masukkan konfirmasi password',
+                        obscureText: !_showPassword,
+                        validator: (value) => value?.isEmpty ?? true
+                            ? 'Password konfirmasi tidak boleh kosong'
                             : null,
                       ),
                       Row(

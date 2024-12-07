@@ -1,12 +1,15 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as path;
+// import 'package:file_picker/file_picker.dart';
+// import 'package:path/path.dart' as path;
 import 'package:sikomti_app/dashboard/home_page.dart';
+import 'package:sikomti_app/proses_log&res/login_page.dart';
 
 class UploadBerkasBeritaAcara extends StatefulWidget {
-  const UploadBerkasBeritaAcara({super.key});
+  final User user;  // Deklarasikan properti user di sini
 
+  // Konstruktor menerima parameter user
+  const UploadBerkasBeritaAcara({super.key, required this.user});
   @override
   _UploadBerkasBeritaAcaraState createState() =>
       _UploadBerkasBeritaAcaraState();
@@ -27,10 +30,10 @@ class _UploadBerkasBeritaAcaraState extends State<UploadBerkasBeritaAcara> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomePage(username: 'mahasiswa'),
+                builder: (context) => HomePage(user: widget.user),
               ),
             );
           },
@@ -70,32 +73,28 @@ class _UploadBerkasBeritaAcaraState extends State<UploadBerkasBeritaAcara> {
                         ),
                         ElevatedButton(
                           onPressed: () {
+                            // Memunculkan dialog PopUpBeritaAcara
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return PopUpBeritaAcara(
-                                  onFileUploaded: (fileName) {
-                                    setState(() {
-                                      uploadedFileName = fileName;
-                                    });
-                                  },
-                                );
+                                return const PopUpBeritaAcara();
                               },
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF0074D9),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 12.0),
+                            backgroundColor: const Color.fromARGB(255, 249, 16, 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 10.0),
                           ),
                           child: const Text(
                             'Unggah',
                             style: TextStyle(
-                              color: Colors.white,
+                              fontSize: 14.0,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -116,27 +115,6 @@ class _UploadBerkasBeritaAcaraState extends State<UploadBerkasBeritaAcara> {
                               spreadRadius: 2,
                               blurRadius: 5,
                               offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.insert_drive_file,
-                              color: Colors.blue,
-                              size: 24.0,
-                            ),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: Text(
-                                '$uploadedFileName',
-                                maxLines: 5,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
                             ),
                           ],
                         ),
@@ -171,30 +149,8 @@ class _UploadBerkasBeritaAcaraState extends State<UploadBerkasBeritaAcara> {
   }
 }
 
-class PopUpBeritaAcara extends StatefulWidget {
-  final Function(String) onFileUploaded;
-
-  const PopUpBeritaAcara({super.key, required this.onFileUploaded});
-
-  @override
-  _PopUpBeritaAcaraState createState() => _PopUpBeritaAcaraState();
-}
-
-class _PopUpBeritaAcaraState extends State<PopUpBeritaAcara> {
-  File? selectedFile;
-
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf'],
-    );
-
-    if (result != null && result.files.isNotEmpty) {
-      setState(() {
-        selectedFile = File(result.files.single.path!);
-      });
-    }
-  }
+class PopUpBeritaAcara extends StatelessWidget {
+  const PopUpBeritaAcara({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -206,6 +162,7 @@ class _PopUpBeritaAcaraState extends State<PopUpBeritaAcara> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Header Pop-Up
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: const BoxDecoration(
@@ -217,9 +174,9 @@ class _PopUpBeritaAcaraState extends State<PopUpBeritaAcara> {
             ),
             child: const Center(
               child: Text(
-                'Unggah Surat Berita Acara Bebas Kompen',
+                'Pemberitahuan',
                 style: TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -231,120 +188,39 @@ class _PopUpBeritaAcaraState extends State<PopUpBeritaAcara> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Pilih file:',
-                      style: TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: _pickFile,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Choose file',
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
+                // Icon
+                const Icon(
+                  Icons.info_outline,
+                  color: Color.fromARGB(255, 252, 112, 65),
+                  size: 90.0,
+                ),
+                const SizedBox(height: 16.0),
+                // Pesan dengan font italic
+                const Text(
+                  'Berkas berita acara hanya bisa diupload pada aplikasi web.',
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14.0,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Batal',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                // Tombol OK
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0074D9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                    const SizedBox(width: 16.0),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (selectedFile != null) {
-                          final fileName = path.basename(selectedFile!.path);
-                          widget.onFileUploaded(fileName);
-
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                  size: 70.0,
-                                ),
-                                content: const Text(
-                                  'Berhasil Unggah Berkas',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Error'),
-                                content: const Text(
-                                    'Silakan pilih file terlebih dahulu.'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      child: const Text(
-                        'Simpan',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
+                  ),
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
