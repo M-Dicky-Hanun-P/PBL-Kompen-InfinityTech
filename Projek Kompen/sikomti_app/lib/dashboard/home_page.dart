@@ -18,7 +18,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
+  Future<Map<String, dynamic>> getDashboardMHS() async {
+    final url = Uri.parse(
+        'http://10.0.2.2:8000/api/dashboardMHS/${widget.user.id_mahasiswa}');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -191,60 +202,147 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Expanded(
-            child: Container(
-              color: const Color.fromARGB(255, 255, 255, 255),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/img/logo_jti_polinema.png',
-                      height: 150,
-                      width: 250,
-                    ),
-                    Card(
-                      elevation: 20,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      color: const Color(0xFF0E1F43),
-                      child: Container(
-                        width: 300,
-                        padding: const EdgeInsets.all(10),
-                        child: Image.asset(
-                          'assets/img/SIKOMTI.png',
-                          height: 70,
-                          width: 60,
-                          fit: BoxFit.cover,
+              child: FutureBuilder<Map<String, dynamic>>(
+            future: getDashboardMHS(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return const Center(
+                    child: Text('Informasi alpha segera di update oleh admin.'));
+              } else {
+                final data = snapshot.data ?? {};
+                final totalAlpha = data['jumlah_alpha'] ?? 0;
+                final totalDibayar = data['kompen_dibayar'] ?? 0;
+
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // Kotak untuk judul
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 60),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(
+                              255, 49, 126, 251), // Warna kotak biru
+                          borderRadius: BorderRadius.circular(
+                              10), // Membuat sudut kotak melengkung
+                        ),
+                        child: const Text(
+                          'Overview Kompen Kamu',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors
+                                .white, // Warna teks putih untuk kontras dengan biru
+                          ),
                         ),
                       ),
-                    ),
-
-                    // const SizedBox(height: 1),
-                    // const Text(
-                    //   'Sistem Kompensasi Jurusan Teknologi Informasi',
-                    //   textAlign: TextAlign.center,
-                    //   style: TextStyle(
-                    //     fontSize: 18,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.black87,
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 2),
-                    // const Text(
-                    //   'Politeknik Negeri Malang',
-                    //   textAlign: TextAlign.center,
-                    //   style: TextStyle(
-                    //     fontSize: 20,
-                    //     fontWeight: FontWeight.bold,
-                    //     color: Colors.black87,
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Card(
+                              elevation: 6,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              color: const Color.fromARGB(
+                                  255, 218, 28, 28), // Merah
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    const Icon(
+                                      Icons.alarm,
+                                      color: Colors
+                                          .white, // Mengubah ikon menjadi putih
+                                      size: 36, // Ukuran ikon lebih besar
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text(
+                                      'Total Jam Alpha',
+                                      style: TextStyle(
+                                        color:
+                                            Color.fromARGB(214, 255, 255, 255),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight
+                                            .w500, // Menambah ketebalan teks
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      totalAlpha > 0
+                                          ? '$totalAlpha Jam'
+                                          : '- Jam', // Menampilkan '- Jam' jika tidak ada data
+                                      style: const TextStyle(
+                                        color: Colors
+                                            .white, // Warna teks utama tetap putih
+                                        fontSize: 20, // Ukuran font lebih besar
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: Card(
+                              elevation: 6,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              color: const Color.fromARGB(
+                                  255, 47, 197, 2), // Hijau
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: Colors
+                                          .white, // Ikon putih untuk kontras yang bagus
+                                      size: 36, // Ukuran ikon lebih besar
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text(
+                                      'Kompen Dibayar',
+                                      style: TextStyle(
+                                        color:
+                                            Color.fromARGB(214, 255, 255, 255),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight
+                                            .w500, // Menambah ketebalan teks
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      totalDibayar > 0
+                                          ? '$totalDibayar Jam'
+                                          : '- Jam', // Menampilkan '- Jam' jika tidak ada data
+                                      style: const TextStyle(
+                                        color: Colors
+                                            .white, // Warna teks utama tetap putih
+                                        fontSize: 20, // Ukuran font lebih besar
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          )),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(15),
@@ -290,6 +388,7 @@ class _HomePageState extends State<HomePage> {
         builder: (context) => ProfilePageDialog(
           username: widget.user.username,
           nama: profileData['nama'] ?? '',
+          nim: profileData['nim'] ?? '',
           email: widget.user.email,
           no_telepon: profileData['no_telepon'] ?? '',
           password: profileData['password'] ?? '',
@@ -312,6 +411,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late String username = '';
   late String nama = '';
+  late String nim = '';
   late String email = '';
   late String no_telepon;
   late String password = '';
@@ -327,6 +427,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         username = data['username'];
         nama = data['nama'];
+        nim = data['nim'];
         email = data['email'];
         no_telepon = data['no_telepon'];
         password = data['password'];
@@ -351,6 +452,7 @@ class _ProfilePageState extends State<ProfilePage> {
       builder: (context) => ProfilePageDialog(
         username: username,
         nama: nama,
+        nim: nim,
         email: email,
         no_telepon: no_telepon, // Tidak perlu mengubah int ke String
         password: password,
@@ -378,6 +480,7 @@ class _ProfilePageState extends State<ProfilePage> {
 class ProfilePageDialog extends StatelessWidget {
   final String username;
   final String nama;
+  final String nim;
   final String email;
   final String no_telepon;
   final String password;
@@ -387,6 +490,7 @@ class ProfilePageDialog extends StatelessWidget {
     super.key,
     required this.username,
     required this.nama,
+    required this.nim,
     required this.email,
     required this.no_telepon,
     required this.password,
@@ -445,12 +549,11 @@ class ProfilePageDialog extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           // const Divider(color: Colors.black54, height: 20),
-
           // Nama
           Row(
             children: [
-              const Icon(Icons.alternate_email,
-                  size: 20, color: Colors.blueAccent),
+              const Icon(Icons.person,
+                  size: 20, color: Colors.blueAccent), // Ikon untuk Nama
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -460,6 +563,23 @@ class ProfilePageDialog extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 1),
+          const Divider(color: Colors.black54, height: 20),
+          // NIM
+          Row(
+            children: [
+              const Icon(Icons.badge_outlined,
+                  size: 20, color: Colors.blueAccent), // Ikon untuk NIM
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'NIM: $nim',
+                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+              ),
+            ],
+          ),
+
           const SizedBox(height: 1),
           const Divider(color: Colors.black54, height: 20),
           // Email

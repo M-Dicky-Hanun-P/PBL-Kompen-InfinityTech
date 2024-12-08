@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sikomti_app/fitur_sidebar/lihat_dan_pilih_kompen/lihat_kompen_page.dart';
 import 'package:sikomti_app/proses_log&res/login_page.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class DetailTugasYangTersediaPage extends StatelessWidget {
   final ValueChanged<bool> onStatusChanged;
@@ -13,6 +15,22 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
     required this.task,
     required this.user,
   });
+
+// Fungsi untuk memformat tanggal
+String formatDate(String? dateString) {
+  if (dateString == null) return 'Tanggal Tidak Diketahui';
+
+  try {
+    // Inisialisasi format tanggal untuk bahasa Indonesia
+    initializeDateFormatting('id_ID');
+    
+    DateTime dateTime = DateTime.parse(dateString);
+    // Format: Senin, 07 Desember 2024 14:30
+    return DateFormat('EEEE, dd MMMM yyyy HH:mm', 'id_ID').format(dateTime);
+  } catch (e) {
+    return 'Format Tanggal Invalid';
+  }
+}
 
   // Fungsi untuk mendapatkan nilai dari task dengan pengecekan null
   String getTaskField(dynamic task, String key,
@@ -54,7 +72,7 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -63,32 +81,58 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
                 getTaskField(task, 'nama_tugas'),
                 Icons.assignment,
               ),
+              const SizedBox(height: 5), // Jarak antar kartu
               buildDetailCard(
                 'Deskripsi:',
                 getTaskField(task, 'deskripsi'),
                 Icons.description,
               ),
+              // const SizedBox(height: 5), // Jarak antar kartu
+              // buildDetailCard(
+              //   'Status:',
+              //   getTaskField(task, 'status'),
+              //   Icons.description,
+              // ),
+              const SizedBox(height: 5),
+              buildDetailCard(
+                'Tanggal Mulai: ',
+                formatDate(task['tanggal_mulai']),
+                Icons
+                    .calendar_today_rounded, // Icon kalender untuk tanggal mulai
+              ),
+              const SizedBox(height: 5),
+              buildDetailCard(
+                'Tanggal Selesai: ',
+                formatDate(task['tanggal_selesai']),
+                Icons
+                    .event_available_rounded, // Icon kalender dengan tanda centang untuk tanggal selesai
+              ),
+              const SizedBox(height: 5), // Jarak antar kartu
               buildDetailCard(
                 'Pemberi Tugas:',
                 pemberiTugas,
                 Icons.person,
               ),
+              const SizedBox(height: 5), // Jarak antar kartu
               buildDetailCard(
                 'Bidang Keahlian:',
                 bidangKeahlian,
                 Icons.school,
               ),
+              const SizedBox(height: 5), // Jarak antar kartu
               buildDetailCard(
                 'Jam Kompen:',
                 getTaskField(task, 'jam_kompen'),
                 Icons.access_time,
               ),
+              const SizedBox(height: 5), // Jarak antar kartu
               buildDetailCard(
                 'Kuota:',
                 getTaskField(task, 'kuota'),
                 Icons.group,
               ),
-              const SizedBox(height: 1),
+              const SizedBox(
+                  height: 10), // Jarak antara kartu terakhir dan tombol
               Center(
                 child: ElevatedButton(
                   onPressed: () {
@@ -98,11 +142,10 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 249, 16, 12),
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 10.0,
-                      
+                      horizontal: 16.0,
+                      vertical: 8.0,
                     ),
-                    minimumSize: const Size(100, 40),
+                    minimumSize: const Size(120, 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
@@ -110,7 +153,7 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
                   child: const Text(
                     'Apply',
                     style: TextStyle(
-                      fontSize: 15.0,
+                      fontSize: 14.0,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
@@ -124,11 +167,11 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
     );
   }
 
-  // Card untuk detail tugas
+// Card untuk detail tugas
   Widget buildDetailCard(String title, String value, IconData icon) {
     return Card(
       elevation: 5,
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      margin: const EdgeInsets.symmetric(vertical: 5), // Margin antar kartu
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -137,21 +180,25 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon, color: Colors.blue, size: 30),
-            const SizedBox(width: 10),
+            const SizedBox(width: 10), // Jarak antara ikon dan teks
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      )),
-                  const SizedBox(height: 5),
-                  Text(value,
-                      style: const TextStyle(
-                        fontSize: 14,
-                      )),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 5), // Jarak antara judul dan nilai
+                  Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
               ),
             ),

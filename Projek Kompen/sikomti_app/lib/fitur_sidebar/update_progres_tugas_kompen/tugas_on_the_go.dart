@@ -120,7 +120,7 @@ class TugasOnTheGo extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          '*Dapat diunduh apabila telah selesai mengerjakan penugasan kompen',
+                          '*Dapat diunduh apabila telah selesai mengerjakan penugasan kompen.',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey.shade600,

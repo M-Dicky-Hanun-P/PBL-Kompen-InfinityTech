@@ -27,34 +27,83 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
   Future<void> fetchTasks() async {
     try {
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/tugas?dibuka'),
+        Uri.parse('http://10.0.2.2:8000/api/tugas/'),
       );
+
       if (response.statusCode == 200) {
-        final List data = json.decode(response.body);
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        List<Map<String, dynamic>> allTasks = [];
+
+        // Process tugas_dosen
+        if (responseData.containsKey('tugas_dosen') &&
+            responseData['tugas_dosen'] != null) {
+          final List<dynamic> dosenTasks = responseData['tugas_dosen'];
+          allTasks
+              .addAll(dosenTasks.map((task) => _processTask(task, 'Dosen')));
+        }
+
+        // Process tugas_admin
+        if (responseData.containsKey('tugas_admin') &&
+            responseData['tugas_admin'] != null) {
+          final List<dynamic> adminTasks = responseData['tugas_admin'];
+          allTasks
+              .addAll(adminTasks.map((task) => _processTask(task, 'Admin')));
+        }
+
+        // Process tugas_tendik
+        if (responseData.containsKey('tugas_tendik') &&
+            responseData['tugas_tendik'] != null) {
+          final List<dynamic> tendikTasks = responseData['tugas_tendik'];
+          allTasks
+              .addAll(tendikTasks.map((task) => _processTask(task, 'Tendik')));
+        }
+
         setState(() {
-          _tasks = data.map((task) {
-            return {
-              'nama_tugas': task['nama_tugas'] ?? 'Tugas Tidak Diketahui',
-              'deskripsi': task['deskripsi'] ?? 'Deskripsi Tidak Diketahui',
-              'pemberi_tugas':
-                  task['pemberi_tugas']['username'] ?? 'Tidak Diketahui',
-              'bidang_kompetensi':
-                  task['bidang_kompetensi']['nama_bidkom'] ?? 'Tidak Diketahui',
-              'jam_kompen': task['jam_kompen'] ?? 'Jam Tidak Diketahui',
-              'kuota': task['kuota'] ?? 'Kuota Tidak Diketahui',
-            };
-          }).toList();
+          _tasks = allTasks;
           _isLoading = false;
         });
       } else {
-        throw Exception('Failed to load tasks');
+        throw Exception('Failed to load tasks: ${response.statusCode}');
       }
     } catch (e) {
       setState(() {
+        _tasks = [];
         _isLoading = false;
       });
       print('Error fetching tasks: $e');
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Gagal memuat data: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
+  }
+
+  Map<String, dynamic> _processTask(
+      Map<String, dynamic> task, String taskType) {
+    String pemberiTugas = 'Tidak Diketahui';
+    if (task['pemberi_tugas'] != null) {
+      pemberiTugas = '${task['pemberi_tugas']['username']} ($taskType)';
+    }
+
+    return {
+      'nama_tugas': task['nama_tugas'] ?? 'Tugas Tidak Diketahui',
+      'deskripsi': task['deskripsi'] ?? 'Deskripsi Tidak Diketahui',
+      // 'status': task['status'] ?? 'Status Tidak Diketahui',
+      'tanggal_mulai': task['tanggal_mulai'] ?? 'Tanggal Tidak Diketahui',
+      'tanggal_selesai': task['tanggal_selesai'] ?? 'Tanggal Tidak Diketahui',
+      'pemberi_tugas': pemberiTugas,
+      'bidang_kompetensi': task['bidang_kompetensi'] != null
+          ? task['bidang_kompetensi']['nama_bidkom'] ?? 'Tidak Diketahui'
+          : 'Tidak Diketahui',
+      'jam_kompen': task['jam_kompen']?.toString() ?? 'Jam Tidak Diketahui',
+      'kuota': task['kuota']?.toString() ?? 'Kuota Tidak Diketahui',
+      'jenis_pemberi': taskType, // Menambahkan informasi jenis pemberi tugas
+    };
   }
 
   @override
@@ -151,8 +200,7 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
                           ),
                           const SizedBox(height: 8),
                           Align(
-                            alignment: Alignment
-                                .bottomRight,
+                            alignment: Alignment.bottomRight,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
@@ -175,7 +223,7 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
                                       user: widget.user,
                                       task: task,
                                       onStatusChanged: (status) {
-                                        // Jika ada logika untuk memperbarui status, tambahkan di sini
+                                        //
                                       },
                                     ),
                                   ),
