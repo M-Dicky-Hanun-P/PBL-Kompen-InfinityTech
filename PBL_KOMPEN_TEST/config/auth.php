@@ -38,20 +38,22 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
+            'provider' => 'users',
+        ],
+        'mahasiswa' => [
+            'driver' => 'session',
             'provider' => 'mahasiswa',
         ],
         'admin' => [
             'driver' => 'session',
             'provider' => 'admin',
         ],
-        'dosen' => [
+
+        'dosen_teknisi' => [
             'driver' => 'session',
-            'provider' => 'dosen',
+            'provider' => 'dosen_teknisi',
         ],
-        'tendik' => [
-            'driver' => 'session',
-            'provider' => 'tendik'
-        ]
+
     ],
 
     /*
@@ -72,6 +74,10 @@ return [
     */
 
     'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
         'mahasiswa' => [
             'driver' => 'eloquent',
             'model' => App\Models\MahasiswaModel::class,
@@ -80,19 +86,11 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\AdminModel::class,
         ],
-        'dosen' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\DosenModel::class,
+        'dosen_teknisi' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\DosenTeknisiModel::class,
         ],
-        'tendik' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\TendikModel::class,
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+   
     ],
 
     /*
@@ -121,6 +119,24 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'mahasiswa' => [
+            'provider' => 'mahasiswa',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'admin' => [
+            'provider' => 'admin',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'dosen_teknisi' => [
+            'provider' => 'dosen_teknisi',
+            'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
 
     /*
@@ -135,5 +151,4 @@ return [
     */
 
     'password_timeout' => 10800,
-
 ];

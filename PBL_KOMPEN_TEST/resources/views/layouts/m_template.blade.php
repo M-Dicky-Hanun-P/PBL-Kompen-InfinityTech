@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
 
   @stack('css')
 </head>
@@ -29,8 +31,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="{{ url('#') }}" class="brand-link logo-center" style="background-color: #0E1F43; display: flex; justify-content: center; align-items: center;">
-        <img src="{{ asset('images/SIKOMTI.png') }}" alt="AdminLTE Logo"
-          class="brand-image">
+        <img src="{{ asset('images/SIKOMTI.png') }}" alt="SIKOMTI Logo" class="brand-image">
       </a>
 
       <!-- Sidebar -->
@@ -41,7 +42,9 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
       <!-- Content Header (Page header) -->
-      @include('layouts.breadcrumb')
+      @isset($breadcrumb)
+        @include('layouts.breadcrumb')
+      @endisset
 
       <!-- Main content -->
       <section class="content">
@@ -67,6 +70,9 @@
   <script src="{{ asset('adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <!-- AdminLTE App -->
   <script src="{{ asset('adminlte/dist/js/adminlte.min.js') }}"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 
 </html>

@@ -5,23 +5,26 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
-            <button onclick="modalAction('{{ url('/dtDMKompen/import') }}')" class="btn btn-success fa fa-plus-square "> Import Data</button>
+            <button onclick="modalAction('{{ url('/dtDMAlpha/import') }}')" class="btn btn-success fa fa-plus-square"> Import Data</button>
         </div>
     </div>
     <div class="card-body">
         @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
         @endif
         @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
         @endif
-        <table class="table-bordered table-striped table-hover table-sm table" id="tabel_kompen">
+        <table class="table table-bordered table-striped table-hover table-sm" id="tabel_alpha">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>#</th>
                     <th>Nama Mahasiswa</th>
-                    <th>Jumlah Kompen</th>
-                    <th>Jumlah Kompen Sudah Dikerjakan</th>
+                    <th>Jumlah Alpha</th>
                     <th>Semester</th>
                     <th>Tahun Ajaran</th>
                     <th>Aksi</th>
@@ -30,6 +33,7 @@
         </table>
     </div>
 </div>
+
 <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 
@@ -38,25 +42,39 @@
 
 @push('js')
 <script>
+    // Fungsi untuk menampilkan modal
     function modalAction(url = '') {
         $('#myModal').load(url, function() {
             $('#myModal').modal('show');
-        })
+        });
     }
-    var dataMKompen;
+
+    var dataMAlpha;
+
     $(document).ready(function() {
-        dataMKompen = $('#tabel_kompen').DataTable({
+        // Inisialisasi DataTable
+        dataMAlpha = $('#tabel_alpha').DataTable({
+            processing: true, // Menampilkan loader
             serverSide: true, // Menggunakan server-side processing
             ajax: {
-                "url": "{{ url('dtDMKompen/list') }}", // Endpoint untuk mengambil data kategori
-                "dataType": "json",
-                "type": "POST",
-                "data": function(d) {
-                    d.kode_level = $('#kode_level').val(); // Mengirim data filter kategori_kode
+                url: "{{ url('dtDMAlpha/list') }}", // Endpoint data
+                type: "POST",
+                dataType: "json",
+                data: function(d) {
+                    d._token = "{{ csrf_token() }}"; // Tambahkan token CSRF
+                    d.kode_level = $('#kode_level').val(); // Data filter
+                },
+                error: function(xhr, error, code) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Terjadi Kesalahan',
+                        text: 'Gagal memuat data. Silakan coba lagi.'
+                    });
                 }
             },
-            columns: [{
-                    data: "DT_RowIndex", // Menampilkan nomor urut dari Laravel DataTables addIndexColumn()
+            columns: [
+                {
+                    data: "DT_RowIndex",
                     className: "text-center",
                     orderable: false,
                     searchable: false
@@ -67,12 +85,7 @@
                     searchable: true
                 },
                 {
-                    data: "alpha.jumlah_alpha",
-                    orderable: true,
-                    searchable: true
-                },
-                {
-                    data: "jumlah_alpha_sudah_dikerjakan",
+                    data: "jumlah_alpha",
                     orderable: true,
                     searchable: true
                 },
@@ -87,17 +100,18 @@
                     searchable: true
                 },
                 {
-                    data: "aksi", // Kolom aksi (Edit, Hapus)
+                    data: "aksi",
                     className: "text-center",
                     orderable: false,
                     searchable: false
                 }
-            ]
+            ],
+            order: [[1, 'asc']] // Mengurutkan berdasarkan kolom Nama Mahasiswa
         });
 
-        // Reload tabel saat filter kategori diubah
+        // Reload tabel saat filter diubah
         $('#kode_level').on('change', function() {
-            dataLevel.ajax.reload(); // Memuat ulang tabel berdasarkan filter yang dipilih
+            dataMAlpha.ajax.reload(); // Reload data
         });
     });
 </script>
