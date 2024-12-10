@@ -2,18 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlphaModel;
+use App\Models\mTugasKompenModel;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class WelcomeController extends Controller
 {
-    public function index(){
+    public function index()
+    {
+        // Hardcoded user ID
+        $userId = 2;
+
+        // Fetch alpha data
+        $alphaData = AlphaModel::where('id_mahasiswa', $userId)->first();
+
         $breadcrumb = (object)[
-            'title' => 'Dashboard',
-            'list' => ['Home', 'Welcome']
+            'title' => 'Overview Kompen',
+            'list' => ['Home', 'Overview Kompen']
         ];
 
-        $activeMenu = 'dashboard';
+        $activeMenu = 'overviewKompen';
 
-        return view('m_welcome', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu]);
+        return view('m_welcome ', [
+            'breadcrumb' => $breadcrumb,
+            'activeMenu' => $activeMenu,
+            'jumlahAlpha' => $alphaData ? $alphaData->jumlah_alpha : 0,
+            'kompenSelesai' => $alphaData ? $alphaData->kompen_dibayar : 0
+        ]);
     }
 }

@@ -35,13 +35,13 @@ class LihatPilihKompenController extends Controller
             'tugasKompen' => $tugasKompen
         ]);
     }
-    
+
     public function getTugasReady()
     {
         // Get the currently logged-in user's ID
         // $userId = auth()->user()->id;
         //paksa hardcoded
-        $userId = 2;
+        $userId = 3;
 
         // Get existing applications for the current user
         $existingApplications = mTugasKompenModel::where('id_mahasiswa', $userId)->get();
@@ -66,12 +66,12 @@ class LihatPilihKompenController extends Controller
                 'nama_tugas' => $task->nama_tugas,
                 'deskripsi' => $task->deskripsi,
                 'status' => $task->status,
-                'tanggal_mulai' => Carbon::parse($task->tanggal_mulai),
-                'tanggal_selesai' => Carbon::parse($task->tanggal_selesai),
+                'tanggal_mulai' => Carbon::parse($task->tanggal_mulai)->format('d-m-Y'),
+                'tanggal_selesai' => Carbon::parse($task->tanggal_selesai)->format('d-m-Y'),
                 'jam_kompen' => $task->jam_kompen,
                 'kuota' => $task->kuota,
                 'status_permintaan' => $existingApplication ? $existingApplication->status_penerimaan : null,
-                'waktu_pengerjaan' => Carbon::parse($task->tanggal_mulai)->diffInHours(Carbon::parse($task->tanggal_selesai))
+                'waktu_pengerjaan' => Carbon::parse($task->tanggal_mulai)->format('d-m-Y') . ' - ' . Carbon::parse($task->tanggal_selesai)->format('d-m-Y')
             ];
         }));
 
@@ -87,12 +87,12 @@ class LihatPilihKompenController extends Controller
                 'nama_tugas' => $task->nama_tugas,
                 'deskripsi' => $task->deskripsi,
                 'status' => $task->status,
-                'tanggal_mulai' => Carbon::parse($task->tanggal_mulai),
-                'tanggal_selesai' => Carbon::parse($task->tanggal_selesai),
+                'tanggal_mulai' => Carbon::parse($task->tanggal_mulai)->format('d-m-Y'),
+                'tanggal_selesai' => Carbon::parse($task->tanggal_selesai)->format('d-m-Y'),
                 'jam_kompen' => $task->jam_kompen,
                 'kuota' => $task->kuota,
                 'status_permintaan' => $existingApplication ? $existingApplication->status_penerimaan : null,
-                'waktu_pengerjaan' => Carbon::parse($task->tanggal_mulai)->diffInHours(Carbon::parse($task->tanggal_selesai))
+                'waktu_pengerjaan' => Carbon::parse($task->tanggal_mulai)->format('d-m-Y') . ' - ' . Carbon::parse($task->tanggal_selesai)->format('d-m-Y')
             ];
         }));
 
@@ -108,12 +108,12 @@ class LihatPilihKompenController extends Controller
                 'nama_tugas' => $task->nama_tugas,
                 'deskripsi' => $task->deskripsi,
                 'status' => $task->status,
-                'tanggal_mulai' => Carbon::parse($task->tanggal_mulai),
-                'tanggal_selesai' => Carbon::parse($task->tanggal_selesai),
+                'tanggal_mulai' => Carbon::parse($task->tanggal_mulai)->format('d-m-Y'),
+                'tanggal_selesai' => Carbon::parse($task->tanggal_selesai)->format('d-m-Y'),
                 'jam_kompen' => $task->jam_kompen,
                 'kuota' => $task->kuota,
                 'status_permintaan' => $existingApplication ? $existingApplication->status_penerimaan : null,
-                'waktu_pengerjaan' => Carbon::parse($task->tanggal_mulai)->diffInHours(Carbon::parse($task->tanggal_selesai))
+                'waktu_pengerjaan' => Carbon::parse($task->tanggal_mulai)->format('d-m-Y') . ' - ' . Carbon::parse($task->tanggal_selesai)->format('d-m-Y')
             ];
         }));
 
@@ -124,12 +124,12 @@ class LihatPilihKompenController extends Controller
     {
         // Logic for Admin tasks
         if (strpos($id, 'admin_') === 0) {
-            $taskId = substr($id, 6); // Remove 'admin_' prefix
+            $taskId = substr($id, 6); 
             $task = TugasAdminModel::find($taskId);
 
             $tugasKompen = new mTugasKompenModel();
             $tugasKompen->id_tugas_admin = $taskId;
-            $tugasKompen->id_mahasiswa = 2;
+            $tugasKompen->id_mahasiswa = 3;
             // $tugasKompen->id_mahasiswa = auth()->user()->id;
             $tugasKompen->status_penerimaan = 'request';
             $tugasKompen->tanggal_apply = Carbon::now();
@@ -145,6 +145,7 @@ class LihatPilihKompenController extends Controller
 
             $tugasKompen = new mTugasKompenModel();
             $tugasKompen->id_tugas_dosen = $taskId;
+            $tugasKompen->id_mahasiswa = 3;
             // $tugasKompen->id_mahasiswa = auth()->user()->id;
             $tugasKompen->status_penerimaan = 'request';
             $tugasKompen->tanggal_apply = Carbon::now();
@@ -160,6 +161,7 @@ class LihatPilihKompenController extends Controller
 
             $tugasKompen = new mTugasKompenModel();
             $tugasKompen->id_tugas_tendik = $taskId;
+            $tugasKompen->id_mahasiswa = 3;
             // $tugasKompen->id_mahasiswa = auth()->user()->id;
             $tugasKompen->status_penerimaan = 'request';
             $tugasKompen->tanggal_apply = Carbon::now();

@@ -1,44 +1,45 @@
 @extends('layouts.m_template')
 
 @section('content')
-
-<div class="card">
-    <div class="card-body" style="background-color: #28A745; color: white;">
-        Overview Kompen Kamu
-    </div>
-{{-- </div>
-@endsection --}}
-
-<div class="mt-4">
-    <!--begin::Row-->
+<div class="container-fluid">
     <div class="row">
-        <!-- Jumlah Alpha -->
-        <div class="col-md-4 col-sm-6 col-12">
-            <div class="info-box text-bg-danger">
-                <span class="info-box-icon">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                </span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Jumlah Alpha</span>
-                    <span class="info-box-number">12 Jam</span>
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">Overview Kompen Kamu</h4>
                 </div>
-            </div>
-        </div>
-
-       <!-- Kompen Selesai -->
-        <div class="col-md-4 col-sm-6 col-12">
-            <div class="info-box text-bg-success">
-                <span class="info-box-icon">
-                    <i class="bi bi-check-circle-fill"></i>
-                </span>
-                <div class="info-box-content">
-                    <span class="info-box-text">Kompen Selesai</span>
-                    <span class="info-box-number">24 Jam</span>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-exclamation-triangle-fill fs-1 me-3"></i>
+                                        <div>
+                                            <h5 class="card-title">Jam Alpha</h5>
+                                            <h3 class="card-text">{{ $jumlahAlpha }} Jam</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill fs-1 me-3"></i>
+                                        <div>
+                                            <h5 class="card-title">Kompen Selesai</h5>
+                                            <h3 class="card-text">{{ $kompenSelesai }} Jam</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 @endsection
-

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ManageKompenModel extends Model
 {
@@ -13,17 +14,25 @@ class ManageKompenModel extends Model
     protected $primaryKey = 'id_tugas_kompen'; // Mendefinisikan primary key
 
     protected $fillable = [
-        'nama_tugas',
-        'pemberi_tugas',
-        'jenis_tugas_kompen',
         'deskripsi',
-        'kuota',
-        'jam_kompen',
         'status',
         'tanggal_mulai',
         'tanggal_selesai',
+        'jam_kompen',
+        'kuota',
+        'pemberi_tugas',
         'id_jenis_tugas',
-        'id_bidang_kompetensi',
+        'id_bidkom',
     ];
+
+    public function jenispenugasan(): BelongsTo
+    {
+        return $this->belongsTo(JenisPenugasanModel::class, 'id_jenis_tugas', 'id_jenis_tugas');
+    }
+
+    public function bidangkompetensi(): BelongsTo
+    {
+        return $this->belongsTo(BidangKompetensiModel::class, 'id_bidkom', 'id_bidkom');
+    }
 
 }

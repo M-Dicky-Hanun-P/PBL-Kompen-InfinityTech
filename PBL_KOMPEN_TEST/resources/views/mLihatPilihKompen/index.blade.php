@@ -36,7 +36,7 @@
                     <td>{{ $tugas->deskripsi }}</td>
                     <td>{{ $tugas->kuota }}</td>
                     <td>{{ $tugas->jam_kompen }}</td>
-                    <td>{{ $tugas->waktu_pengerjaan }} jam</td> <!-- Menampilkan waktu pengerjaan -->
+                    <td>{{ $tugas->waktu_pengerjaan }} </td> <!-- Menampilkan waktu pengerjaan -->
 
                     <!-- Tombol Apply hanya muncul jika status belum apply -->
                     <td>

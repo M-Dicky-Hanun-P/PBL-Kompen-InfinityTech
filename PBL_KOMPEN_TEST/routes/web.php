@@ -63,18 +63,17 @@ Route::get('/DosenTeknisi', [dtWelcomeController::class, 'index']);
 
 // user as Mahasiswa
 // Lihat dan Pilih Kompen
-Route::get('/mLihatPilihKompen', [LihatPilihKompenController::class, 'index'])->name('tugas.index');
+Route::get('/mLihatPilihKompen', [LihatPilihKompenController::class, 'index'])->name('lihatPilihKompen.index');
 Route::get('/tugas-kompen/data', [LihatPilihKompenController::class, 'getTugasReady']);
 Route::get('apply/{id}', [LihatPilihKompenController::class, 'applyTugas'])->name('tugas-kompen.apply');
-Route::get('/tugas-kompen/ambil/{id}', [LihatPilihKompenController::class, 'applyTugas']);
-Route::get('apply/{id}', [LihatPilihKompenController::class, 'applyTugas'])->name('tugas-kompen.apply');
-Route::get('/mLihatPilihKompen', [LihatPilihKompenController::class, 'index'])->name('lihatPilihKompen.index');
-
-Route::get('/lihat-pilih-kompen', [LihatPilihKompenController::class, 'index'])->name('tugas.index');
-Route::post('/lihat-pilih-kompen/apply/{id}', [LihatPilihKompenController::class, 'applyTugas'])->name('lihatPilihKompen.apply');
 
 // Update Progres Tugas Kompen
-Route::get('/mUpdateProgresTugasKompen', [UpdateProgresTugasKompenController::class, 'index']);
+Route::get('/mUpdateProgresTugasKompen', [UpdateProgresTugasKompenController::class, 'index'])->name('update-progres.index');
+// Route::get('/update-progress/{id}', [UpdateProgresTugasKompenController::class, 'showUpdateForm'])->name('update-progress.show');
+// Route::post('/update-progress/{id}', [UpdateProgresTugasKompenController::class, 'updateProgress'])->name('update-progress.update');
+Route::post('/update-progress/{id}', [UpdateProgresTugasKompenController::class, 'updateProgress'])->name('update-progress');
+Route::get('/fetch-tugas-data/{id}', [UpdateProgresTugasKompenController::class, 'fetchTugasData'])->name('fetch-tugas-data');
+
 
 // Update Kompen Selesai
 Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index']);
