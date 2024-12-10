@@ -24,8 +24,4 @@ class TugasKompenModel extends Model
         'status_permintaan'
     ];
 
-    public function jenisTugas()
-    {
-        return $this->belongsTo(TugasJenisModel::class, 'id_jenis_tugas', 'id_jenis_tugas');
-    }
 }

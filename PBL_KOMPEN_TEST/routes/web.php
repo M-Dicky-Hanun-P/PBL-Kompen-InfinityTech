@@ -76,7 +76,9 @@ Route::get('/fetch-tugas-data/{id}', [UpdateProgresTugasKompenController::class,
 
 
 // Update Kompen Selesai
-Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index']);
+// Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index']);
+Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index'])->name('mUpdateKompenSelesai.index');
+
 
 // user as Admin
 // User Admin/Dosen/Teknisi
