@@ -54,22 +54,32 @@
     data-keyboard="false" data-width="75%" aria-hidden="true"></div>
 @endsection
 
+<!-- Include jQuery first -->
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     $(document).ready(function () {
         // Open modal to edit progress
-        $('.edit-progress-btn').on('click', function () {
-            const taskId = $(this).data('id');
+        $(document).on('click', '.edit-progress-btn', function () {
+            const taskId = $(this).data('id'); // Get the task ID
 
-            // Fetch the task data dynamically via AJAX (optional, you may have it in the table)
+            // Fetch the task data dynamically via AJAX
             $.ajax({
-                url: `/fetch-tugas-data/${taskId}`, // Define this route to fetch data if needed
+                url: `/fetch-tugas-data/${taskId}`, // Define this route to fetch data
                 type: 'GET',
                 success: function (data) {
                     $('#myModal').html(data).modal('show');
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to fetch task data: ' + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to fetch task data!',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         });
@@ -87,13 +97,27 @@
                     progress: progress
                 },
                 success: function (response) {
-                    alert('Progress updated successfully!');
-                    // Optionally update the UI
-                    $(`tr[data-id="${taskId}"] .editable-progress`).text(progress);
+                    // Close the modal first
                     $('#myModal').modal('hide');
+
+                    // Show SweetAlert confirmation
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Update Progres Tugas Kompen',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        // Optionally update the UI dynamically
+                        $(`tr[data-id="${taskId}"] .editable-progress`).text(progress);
+                    });
                 },
                 error: function (xhr, status, error) {
-                    alert('Failed to update progress: ' + error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Update Progres Gagal',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         });
