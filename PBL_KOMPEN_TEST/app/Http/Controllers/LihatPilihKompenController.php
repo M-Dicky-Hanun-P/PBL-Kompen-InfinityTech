@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\M_tugas_kompen;
 use App\Models\mTugasKompenModel;
 use App\Models\TugasAdminModel;
 use App\Models\TugasDosenModel;
@@ -124,7 +123,7 @@ class LihatPilihKompenController extends Controller
     {
         // Logic for Admin tasks
         if (strpos($id, 'admin_') === 0) {
-            $taskId = substr($id, 6); 
+            $taskId = substr($id, 6);
             $task = TugasAdminModel::find($taskId);
 
             $tugasKompen = new mTugasKompenModel();

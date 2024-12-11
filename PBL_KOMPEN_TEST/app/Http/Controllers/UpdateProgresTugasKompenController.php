@@ -7,74 +7,14 @@ use App\Models\TugasAdminModel;
 use App\Models\TugasDosenModel;
 use App\Models\TugasTendikModel;
 use App\Models\ProgresTugasModel;
-use App\Models\TugasKompenModel;
+use App\Models\MahasiswaModel;
+use App\Models\AdminModel;
+use App\Models\TendikModel;
+use App\Models\DosenModel;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Illuminate\Http\Request;
-
-// class UpdateProgresTugasKompenController extends Controller
-// {
-//     public function index()
-//     {
-//         $breadcrumb = (object)[
-//             'title' => 'Update Progress Penugasan',
-//             'list' => ['Home', 'Update Progress Penugasan']
-//         ];
-
-//         $page = (object)[
-//             'title' => 'Update Progress Penugasan'
-//         ];
-
-//         $activeMenu = 'mUpdateProgressTugasKompen';
-
-//         // Hardcoded user ID
-//         $userId = 2;
-
-//         // // Ambil semua tugas kompen yang sudah diterima oleh mahasiswa
-//         // $tugasKompen = $this->getTugasReady($userId);
-
-//         return view('mUpdateProgresTugasKompen.index', [
-//             'breadcrumb' => $breadcrumb,
-//             'page' => $page,
-//             'activeMenu' => $activeMenu,
-//             // 'tugasKompen' => $tugasKompen
-//         ]);
-//     }
-
-//     public function getTugasReady($userId)
-//     {
-//         // Ambil tugas kompen yang sudah diterima
-//         $tugasKompen = mTugasKompenModel::where('id_mahasiswa', $userId)
-//             ->where('status_penerimaan', 'diterima')
-//             ->get()
-//             ->map(function ($tugas) {
-//                 // Determine the task source and type
-//                 if ($tugas->id_tugas_admin) {
-//                     $task = TugasAdminModel::find($tugas->id_tugas_admin);
-//                     $pemberiTugas = 'Admin';
-//                 } elseif ($tugas->id_tugas_dosen) {
-//                     $task = TugasDosenModel::find($tugas->id_tugas_dosen);
-//                     $pemberiTugas = 'Dosen';
-//                 } elseif ($tugas->id_tugas_tendik) {
-//                     $task = TugasTendikModel::find($tugas->id_tugas_tendik);
-//                     $pemberiTugas = 'Tendik';
-//                 }
-
-//                 return (object)[
-//                     'id' => $tugas->id_tugas_kompen,
-//                     'pemberi_tugas' => $pemberiTugas,
-//                     'nama_tugas' => $task->nama_tugas,
-//                     'status' => $tugas->status_penerimaan,
-//                     'jam_kompen' => $task->jam_kompen,
-//                     'waktu_pengerjaan' => Carbon::parse($task->tanggal_mulai)->format('d-m-Y') . ' - ' . Carbon::parse($task->tanggal_selesai)->format('d-m-Y'),
-//                     'progres' => $tugas->progres ?? 0
-//                 ];
-//             });
-
-//         return $tugasKompen;
-//     }
-// }
-
 
 class UpdateProgresTugasKompenController extends Controller
 {
@@ -160,34 +100,110 @@ class UpdateProgresTugasKompenController extends Controller
         ]);
     }
     public function fetchTugasData($id)
-{
-    $task = mTugasKompenModel::find($id);
+    {
+        $task = mTugasKompenModel::find($id);
 
-    // Ensure task exists
-    if (!$task) {
-        return response()->json(['error' => 'Task not found'], 404);
+        // Ensure task exists
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        // Return modal content
+        return view('mUpdateProgresTugasKompen.update_progres', compact('task'));
     }
 
-    // Return modal content
-    return view('mUpdateProgresTugasKompen.edit_progres', compact('task'));
-}
+    public function updateProgress(Request $request, $id)
+    {
+        $request->validate([
+            'progress' => 'required|string|max:255'
+        ]);
 
-public function updateProgress(Request $request, $id)
-{
-    $request->validate([
-        'progress' => 'required|string|max:255'
-    ]);
+        $task = ProgresTugasModel::where('id_tugas_kompen', $id)->first();
+        if (!$task) {
+            return response()->json(['error' => 'Task not found'], 404);
+        }
 
-    $task = ProgresTugasModel::where('id_tugas_kompen', $id)->first();
-    if (!$task) {
-        return response()->json(['error' => 'Task not found'], 404);
+        // Update progress
+        $task->progress = $request->input('progress');
+        $task->save();
+
+        return response()->json(['success' => true, 'message' => 'Progress updated successfully']);
     }
 
-    // Update progress
-    $task->progress = $request->input('progress');
-    $task->save();
+    public function export_pdf($id)
+    {
+        // Ambil data tugas berdasarkan ID
+        $tugasKompen = mTugasKompenModel::find($id);
+        if (!$tugasKompen) {
+            abort(404, 'Data tugas tidak ditemukan');
+        }
 
-    return response()->json(['success' => true, 'message' => 'Progress updated successfully']);
-}
+        // Ambil data mahasiswa berdasarkan id_mahasiswa
+        $mahasiswa = MahasiswaModel::find($tugasKompen->id_mahasiswa);
+        // $mahasiswa = \DB::table('m_mahasiswa')->where('id', $tugasKompen->id_mahasiswa)->first();
+        if (!$mahasiswa) {
+            abort(404, 'Data mahasiswa tidak ditemukan');
+        }
 
+        // Inisialisasi variabel tugas
+        // $pemberiTugas = '';
+        $namaPemberiTugas = '';
+        $namaTugas = '';
+        $jamKompen = '';
+        $nipPemberiTugas = '';
+        $waktuPengerjaan = '';
+
+        // Tentukan jenis tugas dan ambil detailnya
+        if ($tugasKompen->id_tugas_admin) {
+            $task = TugasAdminModel::find($tugasKompen->id_tugas_admin);
+            if ($task) {
+                $admin = AdminModel::find($task->id_admin);
+                $namaPemberiTugas = $admin ? $admin->nama : 'Admin tidak ditemukan';
+                $nipPemberiTugas = $admin ? $admin->nip : 'NIP tidak ditemukan';
+                $namaTugas = $task->nama_tugas;
+                $jamKompen = $task->jam_kompen;
+            }
+        } elseif ($tugasKompen->id_tugas_dosen) {
+            $task = TugasDosenModel::find($tugasKompen->id_tugas_dosen);
+            if ($task) {
+                $dosen = DosenModel::find($task->id_admin);
+                $namaPemberiTugas = $dosen ? $dosen->nama : 'Dosen tidak ditemukan';
+                $nipPemberiTugas = $dosen ? $dosen->nip : 'NIP tidak ditemukan';
+                $namaTugas = $task->nama_tugas;
+                $jamKompen = $task->jam_kompen;
+            }
+        } elseif ($tugasKompen->id_tugas_tendik) {
+            $task = TugasTendikModel::find($tugasKompen->id_tugas_tendik);
+            if ($task) {
+                $tendik = TendikModel::find($task->id_admin);
+                $namaPemberiTugas = $tendik ? $tendik->nama : 'Tendik tidak ditemukan';
+                $nipPemberiTugas = $tendik ? $tendik->nip : 'NIP tidak ditemukan';
+                $namaTugas = $task->nama_tugas;
+                $jamKompen = $task->jam_kompen;
+            }
+        }
+
+        // Data untuk view PDF
+        $data = [
+            'nama_pengajar' => $namaPemberiTugas,
+            'nip_pengajar' => $nipPemberiTugas,
+            'nama_mahasiswa' => $mahasiswa->nama,
+            'nim' => $mahasiswa->nim,
+            'kelas' => $mahasiswa->kelas,
+            'semester' => $mahasiswa->semester,
+            'pekerjaan' => $namaTugas,
+            'jumlah_jam' => $jamKompen,
+            'tanggal' => date('d F Y'),
+        ];
+
+
+        // Load view untuk PDF
+        $pdf = Pdf::loadView('mUpdateProgresTugasKompen.cetak_berita_acara', $data);
+
+        // Set ukuran kertas dan orientasi
+        $pdf->setPaper('a4', 'portrait');
+
+        // Stream atau download PDF
+        return $pdf->stream('Berita Acara Kompensasi.pdf');
+    }
 }

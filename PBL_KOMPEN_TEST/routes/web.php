@@ -69,14 +69,12 @@ Route::get('apply/{id}', [LihatPilihKompenController::class, 'applyTugas'])->nam
 
 // Update Progres Tugas Kompen
 Route::get('/mUpdateProgresTugasKompen', [UpdateProgresTugasKompenController::class, 'index'])->name('update-progres.index');
-// Route::get('/update-progress/{id}', [UpdateProgresTugasKompenController::class, 'showUpdateForm'])->name('update-progress.show');
-// Route::post('/update-progress/{id}', [UpdateProgresTugasKompenController::class, 'updateProgress'])->name('update-progress.update');
 Route::post('/update-progress/{id}', [UpdateProgresTugasKompenController::class, 'updateProgress'])->name('update-progress');
 Route::get('/fetch-tugas-data/{id}', [UpdateProgresTugasKompenController::class, 'fetchTugasData'])->name('fetch-tugas-data');
+Route::get('/cetak-berita-acara/{id}', [UpdateProgresTugasKompenController::class, 'export_pdf'])->name('cetak.berita.acara');
 
 
 // Update Kompen Selesai
-// Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index']);
 Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index'])->name('mUpdateKompenSelesai.index');
 
 
