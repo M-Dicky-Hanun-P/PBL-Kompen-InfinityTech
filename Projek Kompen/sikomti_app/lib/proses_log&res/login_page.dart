@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sikomti_app/proses_log&res/landing_page.dart';
+import 'package:sikomti_app/proses_log&res/login_as.dart';
 import 'package:sikomti_app/proses_log&res/register_page.dart';
-import 'login_as.dart';
 import 'package:sikomti_app/dashboard/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,7 +16,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _showPassword = false;
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _errorMessage = '';
@@ -220,8 +219,10 @@ class _LoginPageState extends State<LoginPage> {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          HomePage(user: user),
+                                      builder: (context) => HomePage(
+                                        user: user,
+                                        username: user.username,
+                                      ),
                                     ),
                                   );
                                 }

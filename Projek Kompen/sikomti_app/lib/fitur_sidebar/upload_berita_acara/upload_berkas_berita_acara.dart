@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 // import 'package:file_picker/file_picker.dart';
 // import 'package:path/path.dart' as path;
 import 'package:sikomti_app/dashboard/home_page.dart';
-import 'package:sikomti_app/proses_log&res/login_page.dart';
 
 class UploadBerkasBeritaAcara extends StatefulWidget {
-  final User user;  // Deklarasikan properti user di sini
+  final String username;
+  final dynamic user;
 
   // Konstruktor menerima parameter user
-  const UploadBerkasBeritaAcara({super.key, required this.user});
+  const UploadBerkasBeritaAcara({super.key, required this.user, required this.username});
   @override
   _UploadBerkasBeritaAcaraState createState() =>
       _UploadBerkasBeritaAcaraState();
@@ -33,7 +33,7 @@ class _UploadBerkasBeritaAcaraState extends State<UploadBerkasBeritaAcara> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(user: widget.user),
+                builder: (context) => HomePage(username: widget.username, user: widget.user,),
               ),
             );
           },

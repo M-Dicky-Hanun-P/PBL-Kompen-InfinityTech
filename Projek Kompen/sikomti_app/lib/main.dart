@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
           'SIKOMTI', // Menetapkan judul aplikasi yang ditampilkan di taskbar.
       theme: ThemeData(
           primarySwatch: Colors
-              .blue), // Menetapkan tema aplikasi dengan palet warna biru sebagai warna utama.
+              .blue),
       home:
           const LandingPage(), // Menetapkan halaman awal aplikasi yang akan ditampilkan, yaitu LandingPagee.
     );

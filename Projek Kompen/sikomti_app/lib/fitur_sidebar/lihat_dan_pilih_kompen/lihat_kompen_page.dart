@@ -7,8 +7,10 @@ import 'detail_tugas_yang_tersedia.dart';
 
 class LihatKompenPage extends StatefulWidget {
   final User user;
+  final String username;
 
-  const LihatKompenPage({super.key, required this.user});
+  const LihatKompenPage(
+      {super.key, required this.user, required this.username});
 
   @override
   _LihatKompenPageState createState() => _LihatKompenPageState();
@@ -83,28 +85,41 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
     }
   }
 
-  Map<String, dynamic> _processTask(
-      Map<String, dynamic> task, String taskType) {
+Map<String, dynamic> _processTask(Map<String, dynamic> task, String taskType) {
+    // Deklarasi variabel terlebih dahulu
     String pemberiTugas = 'Tidak Diketahui';
+    String jenisPenugasan = 'Tidak Diketahui';
+
+    // Cek pemberi tugas
     if (task['pemberi_tugas'] != null) {
       pemberiTugas = '${task['pemberi_tugas']['username']} ($taskType)';
+    }
+
+    // Cek jenis penugasan berdasarkan taskType
+    if (taskType == 'Admin' && task['jenis_penugasan_admin'] != null) {
+      jenisPenugasan = task['jenis_penugasan_admin']['jenis_kompen'];
+    } else if (taskType == 'Dosen' && task['jenis_penugasan_dosen'] != null) {
+      jenisPenugasan = task['jenis_penugasan_dosen']['jenis_kompen'];
+    } else if (taskType == 'Tendik' && task['jenis_penugasan_tendik'] != null) {
+      jenisPenugasan = task['jenis_penugasan_tendik']['jenis_kompen'];
     }
 
     return {
       'nama_tugas': task['nama_tugas'] ?? 'Tugas Tidak Diketahui',
       'deskripsi': task['deskripsi'] ?? 'Deskripsi Tidak Diketahui',
-      // 'status': task['status'] ?? 'Status Tidak Diketahui',
       'tanggal_mulai': task['tanggal_mulai'] ?? 'Tanggal Tidak Diketahui',
       'tanggal_selesai': task['tanggal_selesai'] ?? 'Tanggal Tidak Diketahui',
       'pemberi_tugas': pemberiTugas,
+      'jenis_penugasan': jenisPenugasan,  // Sekarang menggunakan satu field jenis_penugasan
       'bidang_kompetensi': task['bidang_kompetensi'] != null
           ? task['bidang_kompetensi']['nama_bidkom'] ?? 'Tidak Diketahui'
           : 'Tidak Diketahui',
       'jam_kompen': task['jam_kompen']?.toString() ?? 'Jam Tidak Diketahui',
       'kuota': task['kuota']?.toString() ?? 'Kuota Tidak Diketahui',
-      'jenis_pemberi': taskType, // Menambahkan informasi jenis pemberi tugas
+      'jenis_pemberi': taskType,
+      'status': task['status'] ?? 'Status Tidak Diketahui',
     };
-  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +136,8 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomePage(user: widget.user),
+                builder: (context) =>
+                    HomePage(user: widget.user, username: widget.username),
               ),
             );
           },
@@ -221,6 +237,7 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
                                     builder: (context) =>
                                         DetailTugasYangTersediaPage(
                                       user: widget.user,
+                                      username: widget.username,
                                       task: task,
                                       onStatusChanged: (status) {
                                         //

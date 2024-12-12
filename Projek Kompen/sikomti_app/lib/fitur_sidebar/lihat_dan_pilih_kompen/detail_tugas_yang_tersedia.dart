@@ -8,49 +8,53 @@ class DetailTugasYangTersediaPage extends StatelessWidget {
   final ValueChanged<bool> onStatusChanged;
   final Map<String, dynamic> task; // Data tugas yang diterima
   final User user;
+  final String username;
 
   const DetailTugasYangTersediaPage({
     super.key,
     required this.onStatusChanged,
     required this.task,
     required this.user,
+    required this.username,
   });
 
 // Fungsi untuk memformat tanggal
-String formatDate(String? dateString) {
-  if (dateString == null) return 'Tanggal Tidak Diketahui';
+  String formatDate(String? dateString) {
+    if (dateString == null) return 'Tanggal Tidak Diketahui';
 
-  try {
-    // Inisialisasi format tanggal untuk bahasa Indonesia
-    initializeDateFormatting('id_ID');
-    
-    DateTime dateTime = DateTime.parse(dateString);
-    // Format: Senin, 07 Desember 2024 14:30
-    return DateFormat('EEEE, dd MMMM yyyy HH:mm', 'id_ID').format(dateTime);
-  } catch (e) {
-    return 'Format Tanggal Invalid';
+    try {
+      // Inisialisasi format tanggal untuk bahasa Indonesia
+      initializeDateFormatting('id_ID');
+
+      DateTime dateTime = DateTime.parse(dateString);
+      // Format: Senin, 07 Desember 2024 14:30
+      return DateFormat('EEEE, dd MMMM yyyy HH:mm', 'id_ID').format(dateTime);
+    } catch (e) {
+      return 'Format Tanggal Invalid';
+    }
   }
-}
 
   // Fungsi untuk mendapatkan nilai dari task dengan pengecekan null
-  String getTaskField(dynamic task, String key,
-      {String defaultValue = 'Data Tidak Diketahui'}) {
-    if (task is Map<String, dynamic>) {
-      if (task.containsKey(key) && task[key] != null) {
-        return task[key].toString();
-      }
-    } else if (task is String) {
-      return task;
+String getTaskField(dynamic task, String key, {String defaultValue = 'Data Tidak Diketahui'}) {
+  if (task == null) return defaultValue;
+  
+  if (task is Map<String, dynamic>) {
+    final value = task[key];
+    if (value != null) {
+      return value.toString();
     }
-    return defaultValue;
+  } else if (task is String) {
+    return task;
   }
+  return defaultValue;
+}
 
   @override
   Widget build(BuildContext context) {
     String bidangKeahlian =
         getTaskField(task['bidang_kompetensi'], 'nama_bidkom');
     String pemberiTugas = getTaskField(task['pemberi_tugas'], 'username');
-
+    String jenisPenugasan = getTaskField(task, 'jenis_penugasan');
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -64,7 +68,8 @@ String formatDate(String? dateString) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => LihatKompenPage(user: user),
+                builder: (context) =>
+                    LihatKompenPage(user: user, username: username),
               ),
             );
           },
@@ -77,9 +82,15 @@ String formatDate(String? dateString) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               buildDetailCard(
-                'Jenis Penugasan Kompen:',
+                'Nama Penugasan Kompen:',
                 getTaskField(task, 'nama_tugas'),
                 Icons.assignment,
+              ),
+              const SizedBox(height: 5), // Jarak antar kartu
+              buildDetailCard(
+                'Jenis Penugasan:',
+                jenisPenugasan,
+                  Icons.app_registration_sharp,
               ),
               const SizedBox(height: 5), // Jarak antar kartu
               buildDetailCard(
@@ -87,12 +98,6 @@ String formatDate(String? dateString) {
                 getTaskField(task, 'deskripsi'),
                 Icons.description,
               ),
-              // const SizedBox(height: 5), // Jarak antar kartu
-              // buildDetailCard(
-              //   'Status:',
-              //   getTaskField(task, 'status'),
-              //   Icons.description,
-              // ),
               const SizedBox(height: 5),
               buildDetailCard(
                 'Tanggal Mulai: ',

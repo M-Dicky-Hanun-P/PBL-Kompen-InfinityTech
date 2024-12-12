@@ -10,8 +10,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
-  final User user;
-  const HomePage({super.key, required this.user});
+  final dynamic user;  
+  final String username;
+  const HomePage({super.key, required this.user, required this.username});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -124,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => LihatKompenPage(user: widget.user),
+                      builder: (context) => LihatKompenPage(user: widget.user, username: widget.username,),
                     ),
                   );
                 },
@@ -140,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TugasOnTheGo(user: widget.user),
+                      builder: (context) => TugasOnTheGoScreen(user: widget.user, username: widget.username),
                     ),
                   );
                 },
@@ -157,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          UploadBerkasBeritaAcara(user: widget.user),
+                          UploadBerkasBeritaAcara(user: widget.user, username: widget.username,),
                     ),
                   );
                 },
@@ -318,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                                             .w500, // Menambah ketebalan teks
                                       ),
                                     ),
-                                    const SizedBox(height: 5),
+                                    const SizedBox(height: 7),
                                     Text(
                                       totalDibayar > 0
                                           ? '$totalDibayar Jam'
