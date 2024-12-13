@@ -1,42 +1,54 @@
 <html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <style>
         body {
             font-family: "Times New Roman", Times, serif;
             margin: 20px;
             line-height: 1.5;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
-        td, th {
+
+        td,
+        th {
             padding: 4px;
         }
+
         .header-table {
             margin-bottom: 20px;
         }
+
         .header-table td {
             vertical-align: top;
         }
+
         .header-logo {
             text-align: center;
         }
+
         .header-text {
             text-align: center;
             line-height: 1.2;
         }
+
         .header-text span {
             display: block;
         }
+
         .header-title {
             font-weight: bold;
         }
+
         .line {
             border-bottom: 2px solid black;
             margin: 10px 0 20px 0;
         }
+
         .document-title {
             text-align: center;
             font-size: 14pt;
@@ -44,29 +56,36 @@
             margin-top: 20px;
             margin-bottom: 20px;
         }
+
         .content-table {
             margin-top: 20px;
             margin-bottom: 30px;
             width: 100%;
         }
+
         .content-table td {
             padding: 5px 0;
         }
+
         .signature-section {
             margin-top: 40px;
         }
+
         .signature-table {
             width: 100%;
         }
+
         .signature-table td {
             vertical-align: top;
         }
+
         .signature {
             text-align: center;
             margin-top: 60px;
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <table class="header-table">
@@ -110,7 +129,7 @@
         <tr>
             <td>Nama Mahasiswa</td>
             <td>:</td>
-            <td>{{ $nama_mahasiswa}}</td>
+            <td>{{ $nama_mahasiswa }}</td>
         </tr>
         <tr>
             <td>NIM</td>
@@ -157,10 +176,31 @@
                     <p style="margin-left: 0;"><b>NIP: {{ $nip_pengajar }}</b></p>
                 </td>
             </tr>
+
         </table>
     </div>
-    <div style="margin-top: 40px; font-size: 10pt; text-align: left;">
-        <p><b>NB:</b> Form ini wajib diunggah pada web kompen JTI dan disimpan untuk keperluan bebas tanggungan kompensasi presensi.</p>
+    {{-- <div style="margin-top: 40px; font-size: 10pt; display: flex; align-items: flex-start;">
+        <!-- QR Code di sebelah kiri -->
+        <div style="margin-right: 20px;">
+            <img src="{{ $qrCodeUrl }}" alt="QR Code" width="150" height="150">
+        </div>
+        <div style="margin-top: 40px; font-size: 10pt; text-align: left;">
+            <p><b>NB:</b> Form ini wajib diunggah pada web kompen JTI dan disimpan untuk keperluan bebas tanggungan
+                kompensasi presensi.</p>
+        </div>
+    </div> --}}
+
+    <div style="margin-top: 40px; font-size: 10pt; display: flex; align-items: flex-start;">
+        <!-- QR Code di sebelah kiri -->
+        <div style="margin-right: 20px;">
+            {!! $qrCode !!} <!-- Menampilkan QR Code dalam bentuk SVG -->
+        </div>
+        <!-- Tulisan NB di sebelah kanan -->
+        <div>
+            <p><b>NB:</b> Form ini wajib diunggah pada web kompen JTI dan disimpan untuk keperluan bebas tanggungan kompensasi presensi.</p>
+        </div>
     </div>
 </body>
+
 </html>
+

@@ -13,6 +13,8 @@ use App\Models\TendikModel;
 use App\Models\DosenModel;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 use Illuminate\Http\Request;
 
@@ -130,6 +132,52 @@ class UpdateProgresTugasKompenController extends Controller
         return response()->json(['success' => true, 'message' => 'Progress updated successfully']);
     }
 
+    public function qrcodeGenerate($id)
+{
+    // Ambil data tugas berdasarkan ID
+    $tugasKompen = mTugasKompenModel::find($id);
+    if (!$tugasKompen) {
+        return response()->json(['error' => 'Tugas tidak ditemukan'], 404);
+    }
+
+    // Ambil data mahasiswa berdasarkan ID
+    $mahasiswa = MahasiswaModel::find($tugasKompen->id_mahasiswa);
+    if (!$mahasiswa) {
+        return response()->json(['error' => 'Mahasiswa tidak ditemukan'], 404);
+    }
+
+    // Nama file PDF yang mengandung NIM mahasiswa
+    $nim = $mahasiswa->nim;
+    $fileName = 'surat_berita_acara_' . $nim . '.pdf';
+
+    // Path file surat berita acara
+    $fileUrl = Storage::url('surat_berita_acara/' . $fileName); // File ini harus sudah ada di storage
+
+    // Membuat QR Code yang mengarah ke URL file
+    $qrCodePath = 'public/qr_codes/qr_code_' . $nim . '.png';
+    $qrCodeUrl = Storage::url($qrCodePath);
+
+    // Generate QR Code jika belum ada
+    if (!Storage::exists($qrCodePath)) {
+        $qrCode = QrCode::size(250)->generate(url($fileUrl));
+        Storage::put($qrCodePath, $qrCode);
+    }
+
+    // Kembalikan view dengan QR Code URL
+    return view('mUpdateProgresTugasKompen.cetak_berita_acara', [
+        'qrCode' => url($qrCode), // Pastikan ini dikirim ke view
+        'nama_pengajar' => 'Nama Pengajar', // Ganti dengan data yang sesuai
+        'nip_pengajar' => 'NIP Pengajar', // Ganti dengan data yang sesuai
+        'nama_mahasiswa' => $mahasiswa->nama, // Nama mahasiswa
+        'nim' => $mahasiswa->nim, // NIM mahasiswa
+        'kelas' => $mahasiswa->kelas, // Kelas mahasiswa
+        'semester' => $mahasiswa->semester, // Semester mahasiswa
+        'pekerjaan' => 'Nama Tugas', // Nama tugas
+        'jumlah_jam' => 'Jumlah Jam', // Jumlah jam
+        'tanggal' => now()->format('d F Y') // Tanggal saat ini
+
+    ]);
+}
     public function export_pdf($id)
     {
         // Ambil data tugas berdasarkan ID
@@ -144,6 +192,9 @@ class UpdateProgresTugasKompenController extends Controller
         if (!$mahasiswa) {
             abort(404, 'Data mahasiswa tidak ditemukan');
         }
+        $nim = $mahasiswa->nim;
+        $fileUrl = url('/storage/surat_berita_acara/Berita Acara Kompensasi.pdf');
+        $qrCode = QrCode::size(150)->generate($fileUrl);
 
         // Inisialisasi variabel tugas
         // $pemberiTugas = '';
@@ -194,6 +245,7 @@ class UpdateProgresTugasKompenController extends Controller
             'pekerjaan' => $namaTugas,
             'jumlah_jam' => $jamKompen,
             'tanggal' => date('d F Y'),
+            'qrCode' => $qrCode
         ];
 
 
@@ -206,4 +258,30 @@ class UpdateProgresTugasKompenController extends Controller
         // Stream atau download PDF
         return $pdf->stream('Berita Acara Kompensasi.pdf');
     }
+
+    public function show($id)
+{
+    // Ambil data tugas berdasarkan ID
+    $tugasKompen = mTugasKompenModel::find($id);
+    if (!$tugasKompen) {
+        abort(404, 'Data tugas tidak ditemukan');
+    }
+
+    // Ambil data mahasiswa
+    $mahasiswa = MahasiswaModel::find($tugasKompen->id_mahasiswa);
+    if (!$mahasiswa) {
+        abort(404, 'Data mahasiswa tidak ditemukan');
+    }
+
+    // URL file PDF atau informasi lainnya yang akan dimasukkan dalam QR Code
+    $fileUrl = url('/storage/surat_berita_acara/surat_berita_acara_' . $mahasiswa->nim . '.pdf');
+
+    // Generate QR Code sebagai SVG
+    $qrCode = QrCode::size(200)->generate($fileUrl);
+
+    // Kirim QR Code ke view
+    return view('mUpdateProgresTugasKompen.qr_code_view', compact('qrCode', 'fileUrl'));
 }
+
+}
+
