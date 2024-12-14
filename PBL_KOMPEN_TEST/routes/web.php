@@ -72,14 +72,12 @@ Route::get('/mUpdateProgresTugasKompen', [UpdateProgresTugasKompenController::cl
 Route::post('/update-progress/{id}', [UpdateProgresTugasKompenController::class, 'updateProgress'])->name('update-progress');
 Route::get('/fetch-tugas-data/{id}', [UpdateProgresTugasKompenController::class, 'fetchTugasData'])->name('fetch-tugas-data');
 Route::get('/cetak-berita-acara/{id}', [UpdateProgresTugasKompenController::class, 'export_pdf'])->name('cetak.berita.acara');
-// Route::get('/generate-qrcode/{id}', [UpdateProgresTugasKompenController::class, 'qrcodeGenerate'])->name('generate.qrcode');
-// Route::get('/qrcode/{id}', [UpdateProgresTugasKompenController::class, 'show'])->name('qrcode.show');
+Route::get('/generate-qrcode/{id}', [UpdateProgresTugasKompenController::class, 'qrcodeGenerate'])->name('generate.qrcode');
+Route::get('/qrcode/{id}', [UpdateProgresTugasKompenController::class, 'show'])->name('qrcode.show');
 
 // Update Kompen Selesai
 Route::get('/mUpdateKompenSelesai', [UpdateKompenSelesaiController::class, 'index'])->name('mUpdateKompenSelesai.index');
-Route::post('/tasks/{id}/upload', [UpdateKompenSelesaiController::class, 'upload'])->name('task.upload');
-Route::get('/tasks/{id}/download', [UpdateKompenSelesaiController::class, 'download'])->name('task.download');
-Route::get('/riwayat-kompen/list', [UpdateKompenSelesaiController::class, 'list'])->name('kompen.list');
+Route::post('/upload-berita-acara/{id_riwayat}', [UpdateKompenSelesaiController::class, 'upload'])->name('upload_berita_acara');
 
 
 // user as Admin

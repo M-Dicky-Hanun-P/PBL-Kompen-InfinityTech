@@ -24,4 +24,10 @@ class TugasDosenModel extends Model
         'id_jenis_kompen',
         'id_dosen',
     ];
+
+    public function dosen()
+    {
+        return $this->belongsTo(DosenModel::class, 'id_dosen', 'id_dosen');
+    }
+
 }

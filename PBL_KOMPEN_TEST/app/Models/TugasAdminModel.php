@@ -24,4 +24,10 @@ class TugasAdminModel extends Model
         'id_jenis_kompen',
         'id_admin',
     ];
+
+    public function admin()
+    {
+        return $this->belongsTo(AdminModel::class, 'id_admin', 'id_admin');
+    }
+
 }

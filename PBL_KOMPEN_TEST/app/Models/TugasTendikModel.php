@@ -24,4 +24,9 @@ class TugasTendikModel extends Model
         'id_jenis_kompen',
         'id_tendik',
     ];
+    public function tendik()
+    {
+        return $this->belongsTo(TendikModel::class, 'id_tendik', 'id_tendik'); 
+    }
+
 }

@@ -11,9 +11,9 @@ class AdminModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_admin'; // Mendefinisikan nama tabel
+    protected $table = 'm_admin'; 
 
-    protected $primaryKey = 'id_admin'; // Mendefinisikan primary key
+    protected $primaryKey = 'id_admin';
 
     protected $fillable = ['id_level', 'username', 'password', 'nip', 'no_telepon', 'email', 'nama', 'avatar'];
 
