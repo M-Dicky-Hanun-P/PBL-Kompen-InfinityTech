@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Contracts\Auth\Authenticatable;
 
-class MahasiswaModel extends Model
+class MahasiswaModel extends Model implements Authenticatable
 {
     use HasFactory;
 
@@ -19,12 +19,42 @@ class MahasiswaModel extends Model
 
     protected $casts = ['password' => 'hashed'];
 
-    public function level(): BelongsTo
+    public function level()
     {
         return $this->belongsTo(LevelModel::class, 'id_level', 'id_level');
     }
 
-    public function getRoleName(): string
+    public function getAuthIdentifierName()
+    {
+        return 'id_mahasiswa';
+    }
+
+    public function getAuthIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
+
+    public function getRememberToken()
+    {
+        return null; // Jika tidak digunakan
+    }
+
+    public function setRememberToken($value)
+    {
+        // Tidak perlu diimplementasikan jika tidak digunakan
+    }
+
+    public function getRememberTokenName()
+    {
+        return null; // Jika tidak digunakan
+    }
+
+    public function getRoleName()
     {
         return $this->level->level_nama;
     }

@@ -4,7 +4,7 @@
 
 <div class="card">
     <div class="card-body" style="background-color: #28A745; color: white;">
-        Selamat datang admin Fifi Novitasari
+        Selamat datang  Fifi Novitasari
     </div>
 </div>
 {{-- </div>

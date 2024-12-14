@@ -164,16 +164,6 @@
             
         </div>
     </div>
-
-    <form action="{{ route('login.admin.post') }}" method="POST">
-        @csrf
-        <input type="text" name="username" class="form-control" placeholder="Username" required>
-        <input type="password" name="password" class="form-control" placeholder="Password" required>
-        <div style="margin-bottom: 10px;">
-            <input type="checkbox" id="show-password" onclick="togglePassword()"> Tampilkan Password
-        </div>
-        <button type="submit" class="btn-login">Login</button>
-    </form>
     
 
     <footer>

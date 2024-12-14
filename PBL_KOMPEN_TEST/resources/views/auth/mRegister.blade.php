@@ -13,19 +13,21 @@
             padding: 0;
             font-family: 'Source Sans Pro', sans-serif;
             background-color: #f4f6f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* Header dengan setengah lingkaran biru */
         .header-background {
             background-color: #0E1F43;
             width: 100%;
-            height: 30vh; /* Ubah tinggi menjadi 45vh */
-            border-bottom-left-radius: 85% 85%; /* Lengkungan ke tengah */
-            border-bottom-right-radius: 85% 85%; /* Lengkungan ke tengah */
+            height: 30vh;
+            border-bottom-left-radius: 85% 85%;
+            border-bottom-right-radius: 85% 85%;
             position: relative;
             text-align: center;
             color: #fff;
-            padding-top: 30px; /* Tambahkan padding atas */
+            padding-top: 30px;
         }
 
         .header-background img {
@@ -38,16 +40,15 @@
             margin-top: 10px;
         }
 
-        /* Kontainer form login */
         .login-container {
             margin-top: -80px;
-            max-width: 400px; /* Ubah lebar kotak di sini */
+            max-width: 400px;
             margin: 0 auto;
             padding: 20px;
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            
+            margin-bottom: 100px; /* Adds space between form and footer */
         }
 
         .login-container h3 {
@@ -57,60 +58,44 @@
             color: #001c41;
         }
 
-        /* .form-control {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        } */
-
         .form-control {
-            width: 90%; /* Lebar input */
+            width: 90%;
             padding: 10px;
             margin: 15px auto;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
 
-
-        /* .btn-login {
-            width: 100%;
+        .btn-login {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
             padding: 10px;
             background-color: #28a745;
             color: #fff;
             border: none;
             border-radius: 4px;
+            font-size: 1rem;
+            text-align: center;
             cursor: pointer;
-            font-size: 1rem;
-        } */
+        }
 
-        .btn-login {
-            /* width: 80%; /* Samakan dengan .form-control */
-            /* padding: 8px;
+        .btn-login2 {
+            display: block;
+            width: 80%;
             margin: 10px auto;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            cursor: pointer; */ 
-
-            display: block; /* Ubah tombol menjadi elemen blok */
-            width: 80%; /* Samakan lebar dengan input Username dan Password */
-            margin: 10px auto; /* Pusatkan secara horizontal */
-            padding: 10px; /* Sesuaikan ukuran padding */
-            background-color: #28a745; /* Warna hijau */
+            padding: 10px;
+            background-color: #F9271C;
             color: #fff;
             border: none;
             border-radius: 4px;
             font-size: 1rem;
-            text-align: center; /* Pastikan teks tombol di tengah */
+            text-align: center;
             cursor: pointer;
         }
 
         .btn-login:hover {
-            background-color: #218838;
+            background-color: #1e8436;
         }
 
         .footer {
@@ -120,21 +105,35 @@
             font-size: 0.9rem;
         }
 
-        .footer a {
-            color: #007bff;
-            text-decoration: none;
+        footer {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #0E1F43;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
         }
 
-        footer {
-            position: fixed;
-            bottom: 0; /* Letakkan di bagian bawah layar */
-            left: 0; /* Mulai dari sisi kiri */
-            width: 100%; /* Lebar penuh halaman */
-            background-color: #0E1F43; /* Warna latar footer */
-            color: white; /* Warna teks footer */
-            text-align: center; /* Teks di tengah */
-            padding: 1rem; /* Spasi dalam */
-            font-size: 0.9rem; /* Ukuran teks */
+        .alert {
+            width: 90%;
+            margin: 10px auto;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
@@ -144,43 +143,43 @@
     <div class="header-background">
         <img src="{{ asset('images/SIKOMTI.png') }}" alt="SIKOMTI Logo">
         <h1>REGISTRASI MAHASISWA</h1>
-
     </div>
 
-    <!-- Form Login -->
+    <!-- Form Registrasi -->
     <div class="login-container">
-        {{-- <h3>Login Mahasiswa</h3> --}}
-        <form action="{{ route('login.mahasiswa') }}" method="POST">
-            @csrf <!-- Tambahkan token CSRF -->
-            <input type="text" name="nim" class="form-control" placeholder="NIM" required>
-            <input type="text" name="namalengkap" class="form-control" placeholder="Nama Lengkap" required>
-            <input type="text" name="tahunmasuk" class="form-control" placeholder="Tahun Masuk" required>
-            <input type="text" name="programstudi" class="form-control" placeholder="Program Studi" required>
-            <input type="text" name="email" class="form-control" placeholder="Email" required>
-            <input type="text" name="notelephone" class="form-control" placeholder="Nomor Telephone" required>
-            <input type="text" name="username" class="form-control" placeholder="Username" required>
-            <input type="password" name="password" class="form-control" placeholder="Password" required>
-            <div style="margin-bottom: 10px;">
-                <input type="checkbox" id="show-password" onclick="togglePassword()"> Tampilkan Password
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
+        @endif
+
+        <form action="{{ route('register') }}" method="POST">
+            @csrf
+            <input type="text" name="username" class="form-control" placeholder="Username" required minlength="3" maxlength="50">
+            <input type="password" name="password" class="form-control" placeholder="Password" required minlength="6">
+            <input type="password" name="password_confirmation" class="form-control" placeholder="Konfirmasi Password" required>
+            <input type="text" name="nim" class="form-control" placeholder="NIM" required pattern="[0-9]{9}">
+            <input type="text" name="prodi" class="form-control" placeholder="Program Studi" required>
+            <input type="email" name="email" class="form-control" placeholder="Email" required>
+            <input type="number" name="tahun_masuk" class="form-control" placeholder="Tahun Masuk" required min="1900" max="{{ date('Y') }}">
+            <input type="tel" name="no_telepon" class="form-control" placeholder="Nomor Telepon" required pattern="[0-9]{10,15}">
+            <input type="text" name="nama" class="form-control" placeholder="Nama" required maxlength="100">
             <button type="submit" class="btn-login">Registrasi</button>
         </form>
-        <div class="footer">
-            
-            
-        </div>
+        <button type="button" class="btn-login2" onclick="window.location='{{ route('login.mahasiswa') }}'">Kembali ke Login</button>
     </div>
 
     <footer>
         ©2024 Sistem Kompensasi Jurusan
     </footer>
-
-    <script>
-        function togglePassword() {
-            var passwordField = document.querySelector('input[name="password"]');
-            passwordField.type = passwordField.type === 'password' ? 'text' : 'password';
-        }
-    </script>
 </body>
 
 </html>

@@ -131,7 +131,7 @@
         <div class="half-circle"></div>
         {{-- <img src="{{ asset('images/JTI.png') }}" alt="JTI Logo" class="logo2"> --}}
         <img src="{{ asset('images/SIKOMTI.png') }}" alt="SIKOMTI Logo" class="logo">
-        <p class="subtitle">POLITEKNIK NEGERI MALANG</p>
+        <h3 class="subtitle">POLITEKNIK NEGERI MALANG</h3>
     </div>
 
     <div class="content">

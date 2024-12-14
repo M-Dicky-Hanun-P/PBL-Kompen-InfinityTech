@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MahasiswaModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -12,26 +13,27 @@ class AuthController extends Controller
      * Tampilkan halaman login mahasiswa.
      */
     public function showMahasiswaLogin()
-    {
-        return view('auth.mLogin');
-    }
+{
+    return view('auth.mLogin'); // Tampilan login khusus mahasiswa
+}
 
     /**
      * Proses login mahasiswa.
      */
     public function loginMahasiswa(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        if (Auth::guard('mahasiswa')->attempt($request->only('username', 'password'))) {
-            return redirect()->route('mahasiswa.dashboard');
-        }
-
-        return back()->withErrors(['loginError' => 'Username atau password salah.']);
+    if (Auth::guard('mahasiswa')->attempt($request->only('username', 'password'))) {
+        return redirect()->route('mahasiswa.dashboard');
     }
+
+    return back()->withErrors(['loginError' => 'Username atau password salah.']);
+}
+
 
     /**
      * Tampilkan halaman registrasi mahasiswa.
@@ -45,27 +47,38 @@ class AuthController extends Controller
      * Proses registrasi mahasiswa.
      */
     public function registerMahasiswa(Request $request)
-    {
-        $validated = $request->validate([
-            'username' => 'required|unique:users,username',
-            'password' => 'required|confirmed|min:6',
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'nim' => 'required|unique:users,nim',
-        ]);
+{
+    $validated = $request->validate([
+        'username'     => 'required|string|min:3|max:50|unique:m_mahasiswa,username',
+        'password'     => 'required|string|confirmed|min:6|max:50',
+        'nama'         => 'required|string|max:100',
+        'email'        => 'required|email|unique:m_mahasiswa,email|max:100',
+        'nim'          => 'required|numeric|digits:9|unique:m_mahasiswa,nim',
+        'prodi'        => 'required|string|max:100',
+        'tahun_masuk'  => 'required|numeric|min:1900|max:' . date('Y'),
+        'no_telepon'   => 'required|numeric|digits_between:10,15',
+        //'avatar'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Opsional
+    ]);
+    
+    // Simpan data ke database
+    MahasiswaModel::create([
+        'id_level'     => 2, // Contoh ID default untuk mahasiswa
+        'username'     => $validated['username'],
+        'password'     => bcrypt($validated['password']),
+        'nama'         => $validated['nama'],
+        'email'        => $validated['email'],
+        'nim'          => $validated['nim'],
+        'prodi'        => $validated['prodi'],
+        'tahun_masuk'  => $validated['tahun_masuk'],
+        'no_telepon'   => $validated['no_telepon'],
+        //'avatar'       => $request->file('avatar') ? $request->file('avatar')->store('avatars') : null,
+    ]);
+    
 
-        // Simpan data ke database
-        User::create([
-            'username' => $validated['username'],
-            'password' => bcrypt($validated['password']),
-            'nama' => $validated['nama'],
-            'email' => $validated['email'],
-            'nim' => $validated['nim'],
-            'role' => 'mahasiswa',
-        ]);
+    return redirect()->route('register')->with('success', 'Registrasi berhasil. Silakan login.');
+}
 
-        return redirect('/register')->with('success', 'Registrasi berhasil, silakan login');
-    }
+
 
     /**
      * Tampilkan halaman login admin.
@@ -79,60 +92,44 @@ class AuthController extends Controller
      * Proses login admin.
      */
     public function loginAdmin(Request $request)
+{
+    $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
+
+    $credentials = $request->only('username', 'password');
+
+    if (Auth::guard('admin')->attempt($credentials)) {
+        return redirect()->route('admin.dashboard')->with('success', 'Berhasil login sebagai Admin!');
+    }
+
+    Auth::logout();
+    return back()->withErrors(['error' => 'Anda bukan admin!']);
+}
+
+   /**
+     * Tampilkan halaman login dosen/tendik.
+     */
+    public function showDosentendikLogin()
+    {
+        return view('auth.dtLogin'); // Tampilan login khusus dosen/tendik
+    }
+
+    /**
+     * Proses login dosen/tendik.
+     */
+    public function dosentendikLogin(Request $request)
     {
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $credentials = $request->only('username', 'password');
-
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->role === 'admin') {
-                return redirect()->route('admin.dashboard')->with('success', 'Berhasil login sebagai Admin!');
-            }
-
-            Auth::logout();
-            return back()->withErrors(['error' => 'Anda bukan admin!']);
-        }
-
-        return back()->withErrors(['error' => 'Username atau password salah!']);
-    }
-
-    /**
-     * Tampilkan halaman login dosen/teknisi.
-     */
-    public function showDosenTendikLogin()
-    {
-        return view('auth.dtLogin'); // Pastikan view 'auth.dtLogin' ada
-    }
-
-    /**
-     * Proses login dosen/teknisi.
-     */
-    public function loginDosenTendik(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        if (Auth::guard('dosen_teknisi')->attempt($request->only('username', 'password'))) {
-            return redirect()->route('dosenTeknisi.index');
+        if (Auth::guard('tendik')->attempt($request->only('username', 'password'))) {
+            return redirect()->route('dosenTeknisi.dashboard');
         }
 
         return back()->withErrors(['loginError' => 'Username atau password salah.']);
-    }
-
-    /**
-     * Logout pengguna dari semua jenis guard.
-     */
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
     }
 }

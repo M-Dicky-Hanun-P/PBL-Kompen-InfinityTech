@@ -21,6 +21,7 @@ class mDashboardController extends Controller
         $kompenSelesai = TugasKompenModel::where('status_permintaan', 'diterima')
                                          ->count();
 
+        // Kirim variabel ke view
         return view('dashboard.index', compact('jumlahAlpha', 'kompenBerlangsung', 'kompenSelesai'));
     }
 }

@@ -11,7 +11,6 @@ use App\Http\Controllers\dtDMAlphaController;
 use App\Http\Controllers\dtDMKompenController;
 use App\Http\Controllers\dtManageKompenController;
 use App\Http\Controllers\dtUpdateKompenController;
-use App\Http\Controllers\dtLoginController;
 use App\Http\Controllers\dtWelcomeController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\LihatPilihKompenController;
@@ -45,13 +44,29 @@ use Illuminate\Support\Facades\Route;
 // Landing Page
 Route::get('/', [LandingPageController::class, 'index']);
 
+
+
+// Login routes
+Route::get('/login/mahasiswa', [AuthController::class, 'showMahasiswaLogin'])->name('login.mahasiswa');
+Route::post('/login/mahasiswa', [AuthController::class, 'loginMahasiswa'])->name('login.');
+
+Route::get('/login/dosentendik', [AuthController::class, 'showDosenTendikLogin'])->name('login.dosentendik');
+Route::post('/login/dosentendik', [AuthController::class, 'dosentendikLogin']);
+
+Route::get('/login/admin', [AuthController::class, 'showAdminLogin'])->name('login.admin');
+Route::post('/login/admin', [AuthController::class, 'loginAdmin'])->name('login.admin');
+
+// Register Mahasiswa
+Route::get('/register', [AuthController::class, 'showMahasiswaRegister'])->name('register'); // Untuk form registrasi
+Route::post('/register', [AuthController::class, 'registerMahasiswa'])->name('register'); // Proses registrasi
+
 // Login Mahasiswa
 Route::get('/login/mahasiswa', [AuthController::class, 'showMahasiswaLogin'])->name('login.mahasiswa');
 Route::post('/login/mahasiswa', [AuthController::class, 'loginMahasiswa']);
 
 // Register Mahasiswa
-Route::get('/login/mahasiswa/register', [AuthController::class, 'showMahasiswaRegister'])->name('register.mahasiswa');
-Route::post('/login/mahasiswa/register', [AuthController::class, 'registerMahasiswa']);
+// Route::get('/login/mahasiswa/register', [AuthController::class, 'showMahasiswaRegister'])->name('register');
+// Route::post('/login/mahasiswa/register', [AuthController::class, 'register']);
 
 // Login Admin
 Route::get('/login/admin', [AuthController::class, 'showAdminLogin'])->name('login.admin');
@@ -63,17 +78,19 @@ Route::get('/login/dosentendik', [AuthController::class, 'showDosenTendikLogin']
 // Proses login dosen/teknisi
 Route::post('/login/dosentendik', [AuthController::class, 'dosentendikLogin'])->name('login.dosentendik');
 
-// Logout
-Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 // Welcome for Mahasiswa
-Route::get('/Mahasiswa', [WelcomeController::class, 'index']);
+Route::get('/Mahasiswa', [WelcomeController::class, 'index'])->name('mahasiswa.dashboard');
 
 // Welcome for Admin
 Route::get('/admin', [aWelcomeController::class, 'index'])->name('admin.dashboard');
 
 // Welcome for Dosen/Teknisi
-Route::get('/DosenTeknisi', [dtWelcomeController::class, 'index'])->name('dosenTeknisi.index');
+Route::get('/DosenTeknisi', [dtWelcomeController::class, 'index'])->name('dosenTeknisi.dashboard');
+
+
+// Logout
+Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
 // user as Mahasiswa
 // Lihat dan Pilih Kompen
