@@ -12,7 +12,8 @@ class WelcomeController extends Controller
     public function index()
     {
         // Hardcoded user ID
-        $userId = 2;
+        $userId = 3;
+        //$userId = auth()->user()->id;
 
         // Fetch alpha data
         $alphaData = AlphaModel::where('id_mahasiswa', $userId)->first();
@@ -22,7 +23,7 @@ class WelcomeController extends Controller
             'list' => ['Home', 'Overview Kompen']
         ];
 
-        $activeMenu = 'overviewKompen';
+        $activeMenu = 'dashboard';
 
         return view('m_welcome ', [
             'breadcrumb' => $breadcrumb,
@@ -31,4 +32,5 @@ class WelcomeController extends Controller
             'kompenSelesai' => $alphaData ? $alphaData->kompen_dibayar : 0
         ]);
     }
+
 }
