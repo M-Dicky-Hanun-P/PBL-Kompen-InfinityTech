@@ -179,23 +179,12 @@
 
         </table>
     </div>
-    {{-- <div style="margin-top: 40px; font-size: 10pt; display: flex; align-items: flex-start;">
-        <!-- QR Code di sebelah kiri -->
-        <div style="margin-right: 20px;">
-            <img src="{{ $qrCodeUrl }}" alt="QR Code" width="150" height="150">
-        </div>
-        <div style="margin-top: 40px; font-size: 10pt; text-align: left;">
-            <p><b>NB:</b> Form ini wajib diunggah pada web kompen JTI dan disimpan untuk keperluan bebas tanggungan
-                kompensasi presensi.</p>
-        </div>
-    </div> --}}
 
     <div style="margin-top: 40px; font-size: 10pt; display: flex; align-items: flex-start;">
-        <!-- QR Code di sebelah kiri -->
         <div style="margin-right: 20px;">
-            {!! $qrCode !!} <!-- Menampilkan QR Code dalam bentuk SVG -->
+            {!! $qrCode !!}
         </div>
-        <!-- Tulisan NB di sebelah kanan -->
+
         <div>
             <p><b>NB:</b> Form ini wajib diunggah pada web kompen JTI dan disimpan untuk keperluan bebas tanggungan kompensasi presensi.</p>
         </div>

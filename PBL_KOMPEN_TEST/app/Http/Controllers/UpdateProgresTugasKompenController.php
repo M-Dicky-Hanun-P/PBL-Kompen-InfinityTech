@@ -62,19 +62,19 @@ class UpdateProgresTugasKompenController extends Controller
                 // Tentukan pemberi tugas dan informasi lainnya berdasarkan id_tugas
                 if ($tugas->id_tugas_admin) {
                     $task = TugasAdminModel::find($tugas->id_tugas_admin);
-                    $pemberiTugas = 'Admin';
+                    $pemberiTugas = $task->admin->nama ?? 'Unknown Admin';
                     $nama_tugas = $task->nama_tugas;
                     $jamKompen = $task->jam_kompen;
                     $waktuPengerjaan = Carbon::parse($task->tanggal_mulai)->format('d-m-Y') . ' - ' . Carbon::parse($task->tanggal_selesai)->format('d-m-Y');
                 } elseif ($tugas->id_tugas_dosen) {
                     $task = TugasDosenModel::find($tugas->id_tugas_dosen);
-                    $pemberiTugas = 'Dosen';
+                    $pemberiTugas = $task->dosen->nama ?? 'Unknown Dosen';
                     $nama_tugas = $task->nama_tugas;
                     $jamKompen = $task->jam_kompen;
                     $waktuPengerjaan = Carbon::parse($task->tanggal_mulai)->format('d-m-Y') . ' - ' . Carbon::parse($task->tanggal_selesai)->format('d-m-Y');
                 } elseif ($tugas->id_tugas_tendik) {
                     $task = TugasTendikModel::find($tugas->id_tugas_tendik);
-                    $pemberiTugas = 'Tendik';
+                    $pemberiTugas = $task->tendik->nama ?? 'Unknown Tendik';
                     $nama_tugas = $task->nama_tugas;
                     $jamKompen = $task->jam_kompen;
                     $waktuPengerjaan = Carbon::parse($task->tanggal_mulai)->format('d-m-Y') . ' - ' . Carbon::parse($task->tanggal_selesai)->format('d-m-Y');
@@ -217,7 +217,7 @@ class UpdateProgresTugasKompenController extends Controller
         } elseif ($tugasKompen->id_tugas_dosen) {
             $task = TugasDosenModel::find($tugasKompen->id_tugas_dosen);
             if ($task) {
-                $dosen = DosenModel::find($task->id_admin);
+                $dosen = DosenModel::find($task->id_dosen);
                 $namaPemberiTugas = $dosen ? $dosen->nama : 'Dosen tidak ditemukan';
                 $nipPemberiTugas = $dosen ? $dosen->nip : 'NIP tidak ditemukan';
                 $namaTugas = $task->nama_tugas;
@@ -226,7 +226,7 @@ class UpdateProgresTugasKompenController extends Controller
         } elseif ($tugasKompen->id_tugas_tendik) {
             $task = TugasTendikModel::find($tugasKompen->id_tugas_tendik);
             if ($task) {
-                $tendik = TendikModel::find($task->id_admin);
+                $tendik = TendikModel::find($task->id_tendik);
                 $namaPemberiTugas = $tendik ? $tendik->nama : 'Tendik tidak ditemukan';
                 $nipPemberiTugas = $tendik ? $tendik->nip : 'NIP tidak ditemukan';
                 $namaTugas = $task->nama_tugas;
