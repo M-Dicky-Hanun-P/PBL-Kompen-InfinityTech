@@ -24,8 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
       request.fields['no_telepon'] = _nomorTeleponController.text;
       request.fields['username'] = _usernameController.text;
       request.fields['password'] = _passwordController.text;
-      request.fields['password_confirmation'] =
-          _konfirmasipasswordController.text;
+      request.fields['password_confirmation'] = _konfirmasipasswordController.text;
       request.fields['prodi'] = _selectedProgramStudi ?? '';
       request.fields['tahun_masuk'] = _selectedTahunMasuk ?? '';
 

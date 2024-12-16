@@ -51,9 +51,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print('Login error: $e');
-      setState(() {
-        _errorMessage = 'Error: $e';
-      });
       return null;
     }
   }

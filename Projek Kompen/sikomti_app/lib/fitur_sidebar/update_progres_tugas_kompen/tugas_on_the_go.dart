@@ -248,7 +248,7 @@ class _TugasOnTheGoScreenState extends State<TugasOnTheGoScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(
-                child: Text('Tidak ada tugas yang sedang dikerjakan'));
+                child: Text('Tidak ada tugas yang sedang dikerjakan.'));
           }
 
           return ListView.builder(
