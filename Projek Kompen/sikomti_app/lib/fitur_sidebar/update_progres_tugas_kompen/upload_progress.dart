@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:http/http.dart' as http;
+import 'package:sikomti_app/services/auth_service.dart';
 
 class UploadProgress extends StatefulWidget {
   final String username;
@@ -154,11 +155,17 @@ class _UploadProgressState extends State<UploadProgress> {
 
   // Fungsi untuk mengambil data dari API
   Future<void> _fetchProgressData() async {
-    final url = Uri.parse(
-        'http://10.0.2.2:8000/api/progres?username=${widget.username}');
-    try {
-      final response = await http.get(url);
+    final token = await AuthService.getToken();
+    print('TOKEN $token');
+    final response = await http.get(
+        Uri.parse(
+            'http://10.0.2.2:8000/api/progres?username=${widget.username}'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        });
 
+    try {
       if (response.statusCode == 200) {
         final Map<String, dynamic> parsedData = json.decode(response.body);
         if (parsedData['data'] != '' && parsedData['data'].isNotEmpty) {

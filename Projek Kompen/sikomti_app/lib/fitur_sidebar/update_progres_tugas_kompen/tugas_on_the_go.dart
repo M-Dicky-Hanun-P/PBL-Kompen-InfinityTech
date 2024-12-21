@@ -3,6 +3,7 @@ import 'package:sikomti_app/dashboard/home_page.dart';
 import 'package:sikomti_app/fitur_sidebar/update_progres_tugas_kompen/upload_progress.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:sikomti_app/services/auth_service.dart';
 
 class TugasProgress {
   final int idTugasKompen;
@@ -84,17 +85,17 @@ class AdminTugas {
     required this.bidangKompetensi,
   });
 
-  factory AdminTugas.fromJson(Map<String, dynamic> json) {
+factory AdminTugas.fromJson(Map<String, dynamic> json) {
     return AdminTugas(
-      namaTugas: json['nama_tugas'],
-      deskripsi: json['deskripsi'],
-      jamKompen: json['jam_kompen'],
-      kuota: json['kuota'],
-      pemberiTugas: json['pemberiTugas'],
-      idAdmin: json['id_admin'],
-      bidangKompetensi: BidangKompetensi.fromJson(json['bidangKompetensi']),
+      namaTugas: json['nama_tugas'] ?? '',
+      deskripsi: json['deskripsi'] ?? '',
+      jamKompen: json['jam_kompen']?.toString() ?? '', // Konversi ke String
+      kuota: json['kuota'] ?? 0,
+      pemberiTugas: json['pemberiTugas'] ?? '',
+      idAdmin: json['id_admin'] ?? 0,
+      bidangKompetensi: BidangKompetensi.fromJson(json['bidangKompetensi'] ?? {}),
     );
-  }
+}
 }
 
 class DosenTugas {
@@ -116,17 +117,17 @@ class DosenTugas {
     required this.bidangKompetensi,
   });
 
-  factory DosenTugas.fromJson(Map<String, dynamic> json) {
+factory DosenTugas.fromJson(Map<String, dynamic> json) {
     return DosenTugas(
-      namaTugas: json['nama_tugas'],
-      deskripsi: json['deskripsi'],
-      jamKompen: json['jam_kompen'],
-      kuota: json['kuota'],
-      pemberiTugas: json['pemberiTugas'],
-      idDosen: json['id_dosen'],
-      bidangKompetensi: BidangKompetensi.fromJson(json['bidangKompetensi']),
+      namaTugas: json['nama_tugas'] ?? '',
+      deskripsi: json['deskripsi'] ?? '',
+      jamKompen: json['jam_kompen']?.toString() ?? '', // Konversi ke String
+      kuota: json['kuota'] ?? 0,
+      pemberiTugas: json['pemberiTugas'] ?? '',
+      idDosen: json['id_admin'] ?? 0,
+      bidangKompetensi: BidangKompetensi.fromJson(json['bidangKompetensi'] ?? {}),
     );
-  }
+}
 }
 
 class TendikTugas {
@@ -199,8 +200,15 @@ class _TugasOnTheGoScreenState extends State<TugasOnTheGoScreen> {
   }
 
   Future<List<TugasProgress>> fetchTugasProgress() async {
-    final response = await http.get(Uri.parse(
-        'http://10.0.2.2:8000/api/progres?username=${widget.username}'));
+    final token = await AuthService.getToken();
+    print('TOKEN $token');
+    final response = await http.get(
+        Uri.parse(
+            'http://10.0.2.2:8000/api/progres?username=${widget.username}'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json', // Add this header
+        });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);

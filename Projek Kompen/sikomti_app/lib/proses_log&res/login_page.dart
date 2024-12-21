@@ -5,6 +5,7 @@ import 'package:sikomti_app/proses_log&res/landing_page.dart';
 import 'package:sikomti_app/proses_log&res/login_as.dart';
 import 'package:sikomti_app/proses_log&res/register_page.dart';
 import 'package:sikomti_app/dashboard/home_page.dart';
+import 'package:sikomti_app/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<User?> login(String username, String password) async {
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/login'), // Verify this URL
+        Uri.parse('http://10.0.2.2:8000/api/loginAPI'), // Verify this URL
         body: {'username': username, 'password': password},
       );
 
@@ -34,6 +35,8 @@ class _LoginPageState extends State<LoginPage> {
         final data = json.decode(response.body);
         final user = User.fromJson(data['user']);
 
+         final token = data['token'];
+        await AuthService.storeToken(token);
         // Menampilkan SnackBar dengan pesan username berhasil login
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -293,10 +296,10 @@ class User {
   // Convert JSON to User object
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      username: json['username'],
-      id_mahasiswa: json['id_mahasiswa'],
-      nama: json['nama'],
-      email: json['email'],
+      username: json['username'] ?? '',  // Default to empty string if null
+      id_mahasiswa: json['id'] ?? 0,  // Default to 0 if null
+      nama: json['nama'] ?? '',  // Default to empty string if null
+      email: json['email'] ?? '',  // Default to empty string if null
     );
   }
 }

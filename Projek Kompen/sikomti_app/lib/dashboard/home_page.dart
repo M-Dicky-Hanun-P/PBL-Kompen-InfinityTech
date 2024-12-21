@@ -9,6 +9,8 @@ import 'package:sikomti_app/fitur_sidebar/upload_berita_acara/upload_berkas_beri
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:sikomti_app/services/auth_service.dart';
+
 class HomePage extends StatefulWidget {
   final dynamic user;  
   final String username;
@@ -370,16 +372,30 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<Map<String, dynamic>> getProfileData() async {
-    final url = Uri.parse(
-        'http://10.0.2.2:8000/api/detailMHS/${widget.user.id_mahasiswa}');
-    final response = await http.get(url);
+    try {
+        final token = await AuthService.getToken();
+        print('TOKEN $token');
+        final url = Uri.parse(
+            'http://10.0.2.2:8000/api/detailMHS/${widget.user.id_mahasiswa}');
+        final response = await http.get(url,
+        headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json', // Add this header
+        });
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load profile');
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+
+        if (response.statusCode == 200) {
+            return jsonDecode(response.body);
+        } else {
+            throw Exception('Failed to load profile: ${response.body}');
+        }
+    } catch (e) {
+        print('Detailed error: $e');
+        throw Exception('Failed to load profile');
     }
-  }
+}
 
   Future<void> _showProfileDialog(BuildContext context) async {
     try {

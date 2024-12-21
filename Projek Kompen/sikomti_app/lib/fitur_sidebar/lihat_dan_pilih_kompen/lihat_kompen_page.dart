@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sikomti_app/dashboard/home_page.dart';
 import 'package:sikomti_app/proses_log&res/login_page.dart';
+import 'package:sikomti_app/services/auth_service.dart';
 import 'detail_tugas_yang_tersedia.dart';
 
 class LihatKompenPage extends StatefulWidget {
@@ -28,9 +29,13 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
 
   Future<void> fetchTasks() async {
     try {
-      final response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/tugas/'),
-      );
+      final token = await AuthService.getToken();
+      print('TOKEN $token');
+      final response = await http
+          .get(Uri.parse('http://10.0.2.2:8000/api/tugas/'), headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json', // Add this header
+      });
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
@@ -85,7 +90,8 @@ class _LihatKompenPageState extends State<LihatKompenPage> {
     }
   }
 
-Map<String, dynamic> _processTask(Map<String, dynamic> task, String taskType) {
+  Map<String, dynamic> _processTask(
+      Map<String, dynamic> task, String taskType) {
     // Deklarasi variabel terlebih dahulu
     String pemberiTugas = 'Tidak Diketahui';
     String jenisPenugasan = 'Tidak Diketahui';
@@ -110,7 +116,8 @@ Map<String, dynamic> _processTask(Map<String, dynamic> task, String taskType) {
       'tanggal_mulai': task['tanggal_mulai'] ?? 'Tanggal Tidak Diketahui',
       'tanggal_selesai': task['tanggal_selesai'] ?? 'Tanggal Tidak Diketahui',
       'pemberi_tugas': pemberiTugas,
-      'jenis_penugasan': jenisPenugasan,  // Sekarang menggunakan satu field jenis_penugasan
+      'jenis_penugasan':
+          jenisPenugasan, // Sekarang menggunakan satu field jenis_penugasan
       'bidang_kompetensi': task['bidang_kompetensi'] != null
           ? task['bidang_kompetensi']['nama_bidkom'] ?? 'Tidak Diketahui'
           : 'Tidak Diketahui',
@@ -119,7 +126,7 @@ Map<String, dynamic> _processTask(Map<String, dynamic> task, String taskType) {
       'jenis_pemberi': taskType,
       'status': task['status'] ?? 'Status Tidak Diketahui',
     };
-}
+  }
 
   @override
   Widget build(BuildContext context) {
