@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:sikomti_app/dashboard/home_page.dart';
 import 'package:sikomti_app/fitur_sidebar/update_progres_tugas_kompen/upload_progress.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:sikomti_app/services/auth_service.dart';
+import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
 class TugasProgress {
   final int idTugasKompen;
@@ -85,7 +90,7 @@ class AdminTugas {
     required this.bidangKompetensi,
   });
 
-factory AdminTugas.fromJson(Map<String, dynamic> json) {
+  factory AdminTugas.fromJson(Map<String, dynamic> json) {
     return AdminTugas(
       namaTugas: json['nama_tugas'] ?? '',
       deskripsi: json['deskripsi'] ?? '',
@@ -93,9 +98,10 @@ factory AdminTugas.fromJson(Map<String, dynamic> json) {
       kuota: json['kuota'] ?? 0,
       pemberiTugas: json['pemberiTugas'] ?? '',
       idAdmin: json['id_admin'] ?? 0,
-      bidangKompetensi: BidangKompetensi.fromJson(json['bidangKompetensi'] ?? {}),
+      bidangKompetensi:
+          BidangKompetensi.fromJson(json['bidangKompetensi'] ?? {}),
     );
-}
+  }
 }
 
 class DosenTugas {
@@ -117,7 +123,7 @@ class DosenTugas {
     required this.bidangKompetensi,
   });
 
-factory DosenTugas.fromJson(Map<String, dynamic> json) {
+  factory DosenTugas.fromJson(Map<String, dynamic> json) {
     return DosenTugas(
       namaTugas: json['nama_tugas'] ?? '',
       deskripsi: json['deskripsi'] ?? '',
@@ -125,9 +131,10 @@ factory DosenTugas.fromJson(Map<String, dynamic> json) {
       kuota: json['kuota'] ?? 0,
       pemberiTugas: json['pemberiTugas'] ?? '',
       idDosen: json['id_admin'] ?? 0,
-      bidangKompetensi: BidangKompetensi.fromJson(json['bidangKompetensi'] ?? {}),
+      bidangKompetensi:
+          BidangKompetensi.fromJson(json['bidangKompetensi'] ?? {}),
     );
-}
+  }
 }
 
 class TendikTugas {
@@ -220,6 +227,99 @@ class _TugasOnTheGoScreenState extends State<TugasOnTheGoScreen> {
       return [];
     } else {
       throw Exception('Failed to load tugas progress');
+    }
+  }
+
+  int id_tugas_kompen = 0;
+  int id_progres_tugas = 0;
+  Future<void> downloadPdf(int id_tugas_kompen, int id_progres_tugas) async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(child: CircularProgressIndicator());
+        },
+      );
+
+      final dio = Dio();
+
+      dio.options.validateStatus = (status) {
+        return status! < 500;
+      };
+      final token = await AuthService.getToken();
+      print('TOKEN $token');
+
+      dio.options.headers = {
+        'Accept': 'application/pdf',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${token}',
+      };
+
+      final tempDir = await getTemporaryDirectory();
+      final filePath =
+          '${tempDir.path}/berita_acara_kompen_${DateTime.now().millisecondsSinceEpoch}.pdf';
+
+      // Cek response sebelum download
+      final response = await dio.get(
+        'http://10.0.2.2:8000/api/downloadPdf/8/4',
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // Simpan file
+        File(filePath).writeAsBytesSync(response.data);
+
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
+
+        // Buka file PDF
+        final result = await OpenFile.open(filePath);
+
+        if (result.type != ResultType.done) {
+          throw Exception("Tidak dapat membuka file PDF");
+        }
+      } else {
+        throw Exception(
+            "Error ${response.statusCode}: ${response.statusMessage}");
+      }
+    } catch (e) {
+      // Tutup loading indicator jika masih terbuka
+      if (Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+
+      // Tampilkan error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.error, color: Colors.red, size: 40.0),
+                SizedBox(width: 7),
+                Text('Error'),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Text('Gagal mengunduh file: ${e.toString()}'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Tutup'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -380,44 +480,9 @@ class _TugasOnTheGoScreenState extends State<TugasOnTheGoScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 24, vertical: 12),
                                 ),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Row(
-                                          children: [
-                                            Icon(
-                                              Icons.info,
-                                              color: Colors.blue,
-                                              size: 40.0,
-                                            ),
-                                            SizedBox(width: 7),
-                                            Text(
-                                              'Informasi',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        content: const Text(
-                                          '*Surat berita acara bebas kompen hanya dapat diunduh di aplikasi web.',
-                                          style: TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Tutup'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
+                                onPressed: () async {
+                                  await downloadPdf(id_tugas_kompen,
+                                      id_progres_tugas);
                                 },
                                 child: const Text(
                                   'Unduh',

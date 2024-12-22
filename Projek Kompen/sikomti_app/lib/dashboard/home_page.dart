@@ -436,7 +436,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _fetchUserData() async {
     final response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/api/detailMHS/${widget.id_mahasiswa}'),
+      Uri.parse('http://10.0.2.2:8000/api/detailMHS/${widget.id_mahasiswa}'),
     );
 
     if (response.statusCode == 200) {
